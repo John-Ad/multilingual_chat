@@ -98,14 +98,41 @@ class _NewConversationState extends State<NewConversation> {
                       ),
                       child: ListView(
                         children: [
+                          Padding(
+                            padding: const EdgeInsets.fromLTRB(0, 20, 0, 0),
+                            child: Center(
+                              child: Text(
+                                "Suggestions:",
+                                style: theme.textTheme.bodyMedium!.copyWith(
+                                  color: theme.colorScheme.onPrimary,
+                                ),
+                              ),
+                            ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.fromLTRB(20, 10, 20, 0),
+                            child: Container(
+                              height: 1,
+                              decoration: BoxDecoration(
+                                border: Border(
+                                  bottom: BorderSide(
+                                    color: theme.colorScheme.onPrimary,
+                                    width: 1,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
                           for (var topic in topics)
                             Padding(
                               padding: const EdgeInsets.fromLTRB(0, 10, 0, 0),
                               child: ListTile(
-                                title: Text(
-                                  topic,
-                                  style: theme.textTheme.bodyLarge!.copyWith(
-                                    color: theme.colorScheme.onPrimary,
+                                title: Center(
+                                  child: Text(
+                                    topic,
+                                    style: theme.textTheme.bodySmall!.copyWith(
+                                      color: theme.colorScheme.onPrimary,
+                                    ),
                                   ),
                                 ),
                                 onTap: () {
@@ -155,6 +182,29 @@ class _NewConversationState extends State<NewConversation> {
                       ),
                     ),
                   ),
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(0, 20, 0, 0),
+                    child: SizedBox(
+                      width: (MediaQuery.of(context).size.width * 0.8) * 0.8,
+                      height: 50,
+                      child: ElevatedButton(
+                        onPressed: _addConversation,
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: theme.colorScheme.tertiary,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10.0),
+                          ),
+                          padding: const EdgeInsets.fromLTRB(40, 10, 40, 10),
+                        ),
+                        child: Text(
+                          'Continue',
+                          style: theme.textTheme.bodyLarge!.copyWith(
+                            color: theme.colorScheme.onPrimary,
+                          ),
+                        ),
+                      ),
+                    ),
+                  )
                 ],
               ),
             ),
