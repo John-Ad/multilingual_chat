@@ -3,6 +3,8 @@ import 'package:german_tutor/components/homeConversation.dart';
 import 'package:german_tutor/models/conversation.dart';
 import 'package:german_tutor/services/CoversationsService.dart';
 
+import 'newConversation.dart';
+
 class Home extends StatefulWidget {
   const Home({super.key, required this.title});
 
@@ -96,7 +98,13 @@ class _HomeState extends State<Home> {
         ],
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () => {debugPrint("tapped")},
+        onPressed: () => {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => NewConversation(title: widget.title)),
+          )
+        },
         backgroundColor: Colors.blue[900],
         child: const Icon(Icons.add),
       ),
