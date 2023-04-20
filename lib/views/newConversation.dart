@@ -73,10 +73,10 @@ class _NewConversationState extends State<NewConversation> {
               height: MediaQuery.of(context).size.height * 0.6,
               decoration: BoxDecoration(
                 color: theme.colorScheme.surface,
-                borderRadius: BorderRadius.circular(10.0),
+                borderRadius: BorderRadius.circular(10),
               ),
               child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Padding(
                     padding: const EdgeInsets.fromLTRB(0, 20, 0, 0),
@@ -117,19 +117,39 @@ class _NewConversationState extends State<NewConversation> {
                       ),
                     ),
                   ),
-                  Expanded(
-                    child: Padding(
-                      padding: const EdgeInsets.fromLTRB(20, 0, 0, 0),
-                      child: TextField(
-                        controller: _topicController,
-                        style: theme.textTheme.bodyLarge!.copyWith(
-                          color: theme.colorScheme.onPrimary,
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(0, 20, 0, 0),
+                    child: Container(
+                      width: (MediaQuery.of(context).size.width * 0.8) * 0.8,
+                      height: 50,
+                      child: Theme(
+                        data: Theme.of(context).copyWith(
+                          textSelectionTheme: TextSelectionThemeData(
+                            selectionColor: theme.colorScheme.surface,
+                          ),
                         ),
-                        decoration: InputDecoration(
-                          border: InputBorder.none,
-                          hintText: 'Topic',
-                          hintStyle: theme.textTheme.bodyLarge!.copyWith(
+                        child: TextField(
+                          controller: _topicController,
+                          cursorColor: theme.colorScheme.onPrimary,
+                          style: theme.textTheme.bodyLarge!.copyWith(
                             color: theme.colorScheme.onPrimary,
+                          ),
+                          decoration: InputDecoration(
+                            fillColor: theme.colorScheme.primary,
+                            filled: true,
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(10.0),
+                              borderSide: BorderSide.none,
+                            ),
+                            hintText: 'Enter a topic',
+                            hintStyle: theme.textTheme.bodyLarge!.copyWith(
+                              color:
+                                  theme.colorScheme.onPrimary.withOpacity(0.3),
+                            ),
+                            prefixIcon: Icon(
+                              Icons.edit,
+                              color: theme.colorScheme.onPrimary,
+                            ),
                           ),
                         ),
                       ),
