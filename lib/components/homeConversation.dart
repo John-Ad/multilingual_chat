@@ -15,29 +15,47 @@ class HomeConversation extends StatelessWidget {
   Widget build(BuildContext context) {
     var theme = Theme.of(context);
 
-    return Container(
-      margin: const EdgeInsets.fromLTRB(0, 0, 0, 20),
-      color: theme.colorScheme.secondary,
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(10),
-      ),
-      child: Row(
-        children: [
-          Text(
-            conversation.name,
-            style: theme.textTheme.bodyLarge!.copyWith(
-              color: theme.colorScheme.onPrimary,
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(40, 20, 40, 0),
+      child: Container(
+        width: MediaQuery.of(context).size.width * 0.8,
+        height: 50,
+        decoration: BoxDecoration(
+          color: theme.colorScheme.surface,
+          borderRadius: BorderRadius.circular(10.0),
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Expanded(
+              child: GestureDetector(
+                onTap: () => {debugPrint("tapped")},
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(20, 0, 0, 0),
+                  child: SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: Text(
+                      conversation.name,
+                      style: theme.textTheme.bodyLarge!.copyWith(
+                        color: theme.colorScheme.onPrimary,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
             ),
-          ),
-          ElevatedButton.icon(
-            onPressed: () => deleteConversation(conversation.id),
-            icon: Icon(
-              Icons.delete,
-              color: theme.colorScheme.onPrimary,
+            Padding(
+              padding: const EdgeInsets.fromLTRB(0, 0, 10, 0),
+              child: IconButton(
+                onPressed: () => deleteConversation(conversation.id),
+                icon: Icon(
+                  Icons.delete_outline,
+                  color: theme.colorScheme.onPrimary,
+                ),
+              ),
             ),
-            label: const Text(""),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

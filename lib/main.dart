@@ -19,7 +19,7 @@ class MyApp extends StatelessWidget {
           primary: Color.fromARGB(255, 35, 39, 42),
           secondary: Color.fromARGB(255, 44, 47, 51),
           tertiary: Color.fromARGB(255, 52, 152, 219),
-          surface: Color.fromARGB(255, 35, 39, 42),
+          surface: Color.fromARGB(255, 62, 66, 70),
           background: Color.fromARGB(255, 44, 47, 51),
           error: Colors.red,
           onError: Colors.red,

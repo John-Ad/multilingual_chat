@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:german_tutor/components/homeConversation.dart';
 import 'package:german_tutor/models/conversation.dart';
+import 'package:german_tutor/services/CoversationsService.dart';
 
 class Home extends StatefulWidget {
   const Home({super.key, required this.title});
@@ -11,6 +13,25 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
+  final ConversationsService _conversationsService = ConversationsService();
+  List<Conversation> _conversations = [];
+
+  _HomeState() {
+    _getAllConversations();
+  }
+
+  void _getAllConversations() async {
+    var conversations = await _conversationsService.getAll();
+    setState(() {
+      _conversations = conversations;
+    });
+  }
+
+  Future<void> _deleteConversation(int id) async {
+    await _conversationsService.deleteById(id);
+    setState(() {});
+  }
+
   @override
   Widget build(BuildContext context) {
     var theme = Theme.of(context);
@@ -18,7 +39,8 @@ class _HomeState extends State<Home> {
     List<Conversation> testConversations = [
       Conversation(
         id: 1,
-        name: "World politics",
+        name:
+            "World politics, ksdnfjjkdsfn jnksdf jnsdf jsnkdfsd fjkn jsndfsdk",
         createdAt: 971200000,
         updatedAt: 971200000,
       ),
@@ -64,17 +86,10 @@ class _HomeState extends State<Home> {
               shrinkWrap: true,
               children: [
                 for (var conversation in testConversations)
-                  ListTile(
-                    title: Text(
-                      conversation.name,
-                      style: theme.textTheme.bodyLarge!.copyWith(
-                        color: theme.colorScheme.onPrimary,
-                      ),
-                    ),
-                    onTap: () {
-                      Navigator.pushNamed(context, '/conversation');
-                    },
-                  ),
+                  HomeConversation(
+                    conversation: conversation,
+                    deleteConversation: _deleteConversation,
+                  )
               ],
             ),
           ),
