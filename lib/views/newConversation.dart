@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:german_tutor/components/toasts.dart';
 
 import '../models/conversation.dart';
 import '../services/CoversationsService.dart';
+
+import 'package:fluttertoast/fluttertoast.dart';
 
 class NewConversation extends StatefulWidget {
   const NewConversation({super.key, required this.title});
@@ -15,12 +18,31 @@ class NewConversation extends StatefulWidget {
 class _NewConversationState extends State<NewConversation> {
   final ConversationsService _conversationsService = ConversationsService();
   final TextEditingController _topicController = TextEditingController();
+  late FToast fToast;
+
+  @override
+  void initState() {
+    super.initState();
+    fToast = FToast();
+    fToast.init(context);
+  }
 
   void _addConversation() async {
+    if (_topicController.text.isEmpty) {
+      fToast.showToast(
+        child: const ErrorToast(message: "Please enter or choose a topic"),
+      );
+      return;
+    }
+
     if (await _conversationsService.add(_topicController.text)) {
       debugPrint('Conversation added');
+      fToast.showToast(
+          child: const SuccessToast(message: "Conversation added"));
     } else {
       debugPrint('Conversation not added');
+      fToast.showToast(
+          child: const ErrorToast(message: "Conversation not added"));
     }
   }
 
@@ -188,7 +210,10 @@ class _NewConversationState extends State<NewConversation> {
                       width: (MediaQuery.of(context).size.width * 0.8) * 0.8,
                       height: 50,
                       child: ElevatedButton(
-                        onPressed: _addConversation,
+                        // onPressed: _addConversation,
+                        onPressed: () {
+                          _addConversation();
+                        },
                         style: ElevatedButton.styleFrom(
                           backgroundColor: theme.colorScheme.tertiary,
                           shape: RoundedRectangleBorder(
