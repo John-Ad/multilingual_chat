@@ -74,4 +74,21 @@ class ConversationsService {
       return false;
     }
   }
+
+  /// Delete a conversation by id.
+  ///
+  /// @param id The id of the conversation.
+  ///
+  /// @return bool True if the conversation was deleted, false otherwise.
+  Future<bool> deleteById(int id) async {
+    try {
+      await db.delete('Conversation', where: 'id = ?', whereArgs: [id]);
+      return true;
+    } catch (e) {
+      if (kDebugMode) {
+        print(e);
+      }
+      return false;
+    }
+  }
 }
