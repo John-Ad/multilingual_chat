@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:german_tutor/views/home.dart';
 
 void main() {
   runApp(const MyApp());
@@ -28,50 +29,50 @@ class MyApp extends StatelessWidget {
           onBackground: Color.fromARGB(255, 255, 255, 255),
         ),
       ),
-      home: const MyHomePage(title: 'German Tutor'),
+      home: const Home(title: 'German Tutor'),
     );
   }
 }
 
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title});
+// class MyHomePage extends StatefulWidget {
+//   const MyHomePage({super.key, required this.title});
 
-  final String title;
+//   final String title;
 
-  @override
-  State<MyHomePage> createState() => _MyHomePageState();
-}
+//   @override
+//   State<MyHomePage> createState() => _MyHomePageState();
+// }
 
-class _MyHomePageState extends State<MyHomePage> {
-  @override
-  Widget build(BuildContext context) {
-    var theme = Theme.of(context);
+// class _MyHomePageState extends State<MyHomePage> {
+//   @override
+//   Widget build(BuildContext context) {
+//     var theme = Theme.of(context);
 
-    return Scaffold(
-      appBar: AppBar(
-        title: Center(
-          child: Text(
-            widget.title,
-            style: theme.textTheme.headlineLarge,
-          ),
-        ),
-        backgroundColor: theme.primaryColor,
-      ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: const <Widget>[
-            Text(
-              'Nothing yet',
-            ),
-          ],
-        ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {},
-        tooltip: 'New Conversation',
-        child: const Icon(Icons.add),
-      ),
-    );
-  }
-}
+//     return Scaffold(
+//       appBar: AppBar(
+//         title: Center(
+//           child: Text(
+//             widget.title,
+//             style: theme.textTheme.headlineLarge,
+//           ),
+//         ),
+//         backgroundColor: theme.primaryColor,
+//       ),
+//       body: Center(
+//         child: Column(
+//           mainAxisAlignment: MainAxisAlignment.center,
+//           children: const <Widget>[
+//             Text(
+//               'Nothing yet',
+//             ),
+//           ],
+//         ),
+//       ),
+//       floatingActionButton: FloatingActionButton(
+//         onPressed: () {},
+//         tooltip: 'New Conversation',
+//         child: const Icon(Icons.add),
+//       ),
+//     );
+//   }
+// }
