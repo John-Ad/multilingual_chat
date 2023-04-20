@@ -95,6 +95,11 @@ class _HomeState extends State<Home> {
           ),
         ],
       ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () => {debugPrint("tapped")},
+        backgroundColor: Colors.blue[900],
+        child: const Icon(Icons.add),
+      ),
     );
   }
 }
