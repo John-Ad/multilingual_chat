@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:german_tutor/components/toasts.dart';
+import 'package:german_tutor/services/TopicGeneratorService.dart';
 
-import '../models/conversation.dart';
 import '../services/CoversationsService.dart';
 
 import 'package:fluttertoast/fluttertoast.dart';
@@ -19,12 +19,22 @@ class _NewConversationState extends State<NewConversation> {
   final ConversationsService _conversationsService = ConversationsService();
   final TextEditingController _topicController = TextEditingController();
   late FToast fToast;
+  late List<String> _topics;
+
+  _NewConversationState() {
+    _topics = _getRandomTopics();
+  }
 
   @override
   void initState() {
     super.initState();
     fToast = FToast();
     fToast.init(context);
+  }
+
+  List<String> _getRandomTopics() {
+    var topics = TopicGeneratorService.getRandomTopics(3);
+    return topics;
   }
 
   void _addConversation() async {
@@ -49,12 +59,6 @@ class _NewConversationState extends State<NewConversation> {
   @override
   Widget build(BuildContext context) {
     var theme = Theme.of(context);
-
-    var topics = [
-      "greetings",
-      "world politics",
-      "cold war",
-    ];
 
     var mainContentHeight =
         MediaQuery.of(context).size.height - AppBar().preferredSize.height;
@@ -154,7 +158,7 @@ class _NewConversationState extends State<NewConversation> {
                                   ),
                                 ),
                               ),
-                              for (var topic in topics)
+                              for (var topic in _topics)
                                 Padding(
                                   padding:
                                       const EdgeInsets.fromLTRB(0, 10, 0, 0),
