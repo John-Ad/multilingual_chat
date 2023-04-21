@@ -183,7 +183,7 @@ class _NewConversationState extends State<NewConversation> {
                       ),
                       Padding(
                         padding: const EdgeInsets.fromLTRB(0, 20, 0, 0),
-                        child: Container(
+                        child: SizedBox(
                           width:
                               (MediaQuery.of(context).size.width * 0.8) * 0.8,
                           height: 50,
@@ -199,7 +199,11 @@ class _NewConversationState extends State<NewConversation> {
                               style: theme.textTheme.bodyLarge!.copyWith(
                                 color: theme.colorScheme.onPrimary,
                               ),
+                              maxLines: 1,
                               decoration: InputDecoration(
+                                contentPadding:
+                                    const EdgeInsets.fromLTRB(0, 1, 20, 1),
+                                isDense: true,
                                 fillColor: theme.colorScheme.primary,
                                 filled: true,
                                 border: OutlineInputBorder(
