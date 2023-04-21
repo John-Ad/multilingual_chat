@@ -85,7 +85,7 @@ class _HomeState extends State<Home> with RouteAware {
           ),
           Expanded(
             child: ListView(
-              shrinkWrap: true,
+              shrinkWrap: false,
               children: [
                 for (var conversation in _conversations)
                   HomeConversation(
