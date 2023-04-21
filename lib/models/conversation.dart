@@ -1,8 +1,10 @@
+import 'package:flutter/foundation.dart';
+
 class Conversation {
   int id;
   String name;
-  int createdAt;
-  int updatedAt;
+  String createdAt;
+  String updatedAt;
 
   Conversation({
     required this.id,
@@ -12,6 +14,9 @@ class Conversation {
   });
 
   static fromMap(Map<String, dynamic> map) {
+    // print type of map['created_at']
+    debugPrint(map['created_at'].runtimeType.toString());
+
     return Conversation(
       id: map['id'],
       name: map['name'],

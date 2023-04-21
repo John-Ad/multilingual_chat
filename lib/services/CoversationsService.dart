@@ -5,13 +5,19 @@ import 'package:sqflite/sqflite.dart';
 
 class ConversationsService {
   late Database db;
+  bool dbLoaded = false;
 
   ConversationsService() {
     init();
   }
 
-  void init() async {
-    db = await DBContext.database;
+  Future<void> init() async {
+    try {
+      db = await DBContext.database;
+    } catch (e) {
+      debugPrint("Error: $e");
+    }
+    dbLoaded = true;
   }
 
   /// Get all conversations.
@@ -19,17 +25,23 @@ class ConversationsService {
   /// @return List<Conversation> of conversations.
   Future<List<Conversation>> getAll() async {
     try {
+      if (!dbLoaded) {
+        await init();
+      }
+
       var conversations = await db.query('Conversation');
+      // debugPrint(conversations.toString());
       List<Conversation> result = [];
 
       for (var element in conversations) {
         result.add(Conversation.fromMap(element));
       }
+      // debugPrint(result.toString());
 
       return result;
     } catch (e) {
       if (kDebugMode) {
-        print(e);
+        debugPrint("Get all convos: $e");
       }
       return [];
     }
@@ -42,6 +54,10 @@ class ConversationsService {
   /// @return Conversation? The conversation if it exists, null otherwise.
   Future<Conversation?> getById(int id) async {
     try {
+      if (!dbLoaded) {
+        await init();
+      }
+
       var conversation = await db.query('Conversation',
           where: 'id = ?', whereArgs: [id], limit: 1);
 
@@ -65,11 +81,15 @@ class ConversationsService {
   /// @return bool True if the conversation was added, false otherwise.
   Future<bool> add(String name) async {
     try {
+      if (!dbLoaded) {
+        await init();
+      }
+
       await db.insert('Conversation', {'name': name});
       return true;
     } catch (e) {
       if (kDebugMode) {
-        print(e);
+        debugPrint("Add Convo: $e");
       }
       return false;
     }
@@ -82,6 +102,10 @@ class ConversationsService {
   /// @return bool True if the conversation was deleted, false otherwise.
   Future<bool> deleteById(int id) async {
     try {
+      if (!dbLoaded) {
+        await init();
+      }
+
       await db.delete('Conversation', where: 'id = ?', whereArgs: [id]);
       return true;
     } catch (e) {

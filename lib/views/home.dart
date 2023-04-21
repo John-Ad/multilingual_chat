@@ -18,12 +18,15 @@ class _HomeState extends State<Home> {
   final ConversationsService _conversationsService = ConversationsService();
   List<Conversation> _conversations = [];
 
-  _HomeState() {
+  @override
+  void initState() {
+    super.initState();
     _getAllConversations();
   }
 
   void _getAllConversations() async {
     var conversations = await _conversationsService.getAll();
+    debugPrint(conversations.length.toString());
     setState(() {
       _conversations = conversations;
     });
@@ -31,34 +34,34 @@ class _HomeState extends State<Home> {
 
   Future<void> _deleteConversation(int id) async {
     await _conversationsService.deleteById(id);
-    setState(() {});
+    _getAllConversations();
   }
 
   @override
   Widget build(BuildContext context) {
     var theme = Theme.of(context);
 
-    List<Conversation> testConversations = [
-      Conversation(
-        id: 1,
-        name:
-            "World politics, ksdnfjjkdsfn jnksdf jnsdf jsnkdfsd fjkn jsndfsdk",
-        createdAt: 971200000,
-        updatedAt: 971200000,
-      ),
-      Conversation(
-        id: 2,
-        name: "Cold war",
-        createdAt: 971200000,
-        updatedAt: 971200000,
-      ),
-      Conversation(
-        id: 3,
-        name: "Oreos",
-        createdAt: 971200000,
-        updatedAt: 971200000,
-      ),
-    ];
+    // List<Conversation> testConversations = [
+    //   Conversation(
+    //     id: 1,
+    //     name:
+    //         "World politics, ksdnfjjkdsfn jnksdf jnsdf jsnkdfsd fjkn jsndfsdk",
+    //     createdAt: 971200000,
+    //     updatedAt: 971200000,
+    //   ),
+    //   Conversation(
+    //     id: 2,
+    //     name: "Cold war",
+    //     createdAt: 971200000,
+    //     updatedAt: 971200000,
+    //   ),
+    //   Conversation(
+    //     id: 3,
+    //     name: "Oreos",
+    //     createdAt: 971200000,
+    //     updatedAt: 971200000,
+    //   ),
+    // ];
 
     return Scaffold(
       appBar: AppBar(
@@ -87,7 +90,7 @@ class _HomeState extends State<Home> {
             child: ListView(
               shrinkWrap: true,
               children: [
-                for (var conversation in testConversations)
+                for (var conversation in _conversations)
                   HomeConversation(
                     conversation: conversation,
                     deleteConversation: _deleteConversation,
