@@ -5,6 +5,9 @@ void main() {
   runApp(const MyApp());
 }
 
+final RouteObserver<ModalRoute<void>> routeObserver =
+    RouteObserver<ModalRoute<void>>();
+
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
@@ -30,6 +33,7 @@ class MyApp extends StatelessWidget {
         ),
       ),
       home: const Home(title: 'German Tutor'),
+      navigatorObservers: [routeObserver],
     );
   }
 }

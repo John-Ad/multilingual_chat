@@ -16,7 +16,7 @@ class HomeConversation extends StatelessWidget {
     var theme = Theme.of(context);
 
     return Padding(
-      padding: const EdgeInsets.fromLTRB(40, 20, 40, 0),
+      padding: const EdgeInsets.fromLTRB(40, 0, 40, 20),
       child: Container(
         width: MediaQuery.of(context).size.width * 0.8,
         height: 50,
