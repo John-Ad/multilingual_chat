@@ -38,11 +38,15 @@ class _NewConversationState extends State<NewConversation> {
     return topics;
   }
 
-  void navigateToConversation(int id) {
+  void navigateToConversation(int id, String topic) {
     Navigator.push(
       context,
       MaterialPageRoute(
-          builder: (context) => ConversationPage(title: widget.title, id: id)),
+          builder: (context) => ConversationPage(
+                title: widget.title,
+                id: id,
+                topic: topic,
+              )),
     );
   }
 
@@ -61,7 +65,7 @@ class _NewConversationState extends State<NewConversation> {
       fToast.showToast(
           child: const SuccessToast(message: "Conversation added"));
 
-      navigateToConversation(id);
+      navigateToConversation(id, _topicController.text);
     } else {
       debugPrint('Conversation not added');
       fToast.showToast(

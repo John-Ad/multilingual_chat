@@ -35,7 +35,10 @@ class HomeConversation extends StatelessWidget {
                     context,
                     MaterialPageRoute(
                         builder: (context) => ConversationPage(
-                            title: "German Tutor", id: conversation.id)),
+                              title: "German Tutor",
+                              id: conversation.id,
+                              topic: conversation.name,
+                            )),
                   )
                 },
                 child: Padding(
