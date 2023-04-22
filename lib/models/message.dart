@@ -1,5 +1,6 @@
 class Message {
   int id;
+  bool isUserMessage;
   int conversationId;
   String? correction;
   String content;
@@ -9,6 +10,7 @@ class Message {
 
   Message({
     required this.id,
+    required this.isUserMessage,
     required this.conversationId,
     this.correction,
     required this.content,
@@ -19,6 +21,7 @@ class Message {
 
   factory Message.fromMap(Map<String, dynamic> json) => Message(
         id: json["id"],
+        isUserMessage: json["is_user_message"],
         conversationId: json["conversation_id"],
         correction: json["correction"],
         content: json["content"],

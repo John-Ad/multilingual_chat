@@ -1,3 +1,5 @@
+drop table Conversation;
+
 create table
     Conversation(
         id integer primary key autoincrement,
@@ -5,6 +7,8 @@ create table
         created_at timestamp not null default current_timestamp,
         updated_at timestamp not null default current_timestamp
     );
+
+drop table EXISTS Message;
 
 create table
     Message(

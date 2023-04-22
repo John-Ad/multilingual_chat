@@ -28,7 +28,8 @@ class DBContext {
     var databasesPath = await getDatabasesPath();
     String path = '${databasesPath}german_tutor.db';
 
-    return await openDatabase(path, version: version, onCreate: _onCreate);
+    return await openDatabase(path,
+        version: version, onCreate: _onCreate, onUpgrade: _onUpgrade);
   }
 
   static Future _onCreate(Database db, int version) async {
@@ -37,5 +38,13 @@ class DBContext {
     String initSql = await rootBundle.loadString("assets/db/init.sql");
 
     await db.execute(initSql);
+  }
+
+  static Future _onUpgrade(Database db, int oldVersion, int newVersion) async {
+    debugPrint("Upgrading database...");
+
+    String upgradeSql = await rootBundle.loadString("assets/db/upgrade.sql");
+
+    await db.execute(upgradeSql);
   }
 }

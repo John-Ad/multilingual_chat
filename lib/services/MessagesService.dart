@@ -57,13 +57,15 @@ class MessagesService {
   /// @param content The content of the message.
   ///
   /// @return int The id of the message.
-  Future<int> add(int conversationId, String content) async {
+  Future<int> add(
+      int conversationId, String content, bool isUserMessage) async {
     try {
       if (!dbLoaded) {
         await init();
       }
 
       return await db.insert('Message', {
+        "is_user_message": isUserMessage ? 1 : 0,
         "conversation_id": conversationId,
         "content": content,
       });
