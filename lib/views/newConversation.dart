@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:german_tutor/components/toasts.dart';
 import 'package:german_tutor/services/TopicGeneratorService.dart';
+import 'package:german_tutor/views/conversation.dart';
 
 import '../services/CoversationsService.dart';
 
@@ -37,6 +38,14 @@ class _NewConversationState extends State<NewConversation> {
     return topics;
   }
 
+  void navigateToConversation(int id) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+          builder: (context) => ConversationPage(title: widget.title, id: id)),
+    );
+  }
+
   void _addConversation() async {
     if (_topicController.text.isEmpty) {
       fToast.showToast(
@@ -45,10 +54,14 @@ class _NewConversationState extends State<NewConversation> {
       return;
     }
 
-    if (await _conversationsService.add(_topicController.text)) {
+    int id = await _conversationsService.add(_topicController.text);
+
+    if (id > 0) {
       debugPrint('Conversation added');
       fToast.showToast(
           child: const SuccessToast(message: "Conversation added"));
+
+      navigateToConversation(id);
     } else {
       debugPrint('Conversation not added');
       fToast.showToast(

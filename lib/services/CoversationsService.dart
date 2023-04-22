@@ -79,19 +79,18 @@ class ConversationsService {
   /// @param name The name of the conversation.
   ///
   /// @return bool True if the conversation was added, false otherwise.
-  Future<bool> add(String name) async {
+  Future<int> add(String name) async {
     try {
       if (!dbLoaded) {
         await init();
       }
 
-      await db.insert('Conversation', {'name': name});
-      return true;
+      return await db.insert('Conversation', {'name': name});
     } catch (e) {
       if (kDebugMode) {
         debugPrint("Add Convo: $e");
       }
-      return false;
+      return 0;
     }
   }
 
