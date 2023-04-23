@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:german_tutor/components/gptMessage.dart';
 import 'package:german_tutor/models/conversation.dart';
 import 'package:german_tutor/services/CoversationsService.dart';
 
@@ -36,6 +37,39 @@ class _ConversationPageState extends State<ConversationPage> {
   Widget build(BuildContext context) {
     var theme = Theme.of(context);
 
+    List<Message> gptMessages = [
+      Message(
+        id: 1,
+        content: 'Hallo, wie geht es dir?',
+        correction: 'Hallo, wie geht es Ihnen?',
+        translation: 'Hello, how are you?',
+        conversationId: 1,
+        isUserMessage: false,
+        createdAt: DateTime.now().millisecondsSinceEpoch ~/ 1000,
+        updatedAt: DateTime.now().millisecondsSinceEpoch ~/ 1000,
+      ),
+      Message(
+        id: 2,
+        content: 'Mir geht es gut, danke.',
+        correction: 'Mir geht es gut, danke.',
+        translation: 'I\'m fine, thank you.',
+        conversationId: 1,
+        isUserMessage: true,
+        createdAt: DateTime.now().millisecondsSinceEpoch ~/ 1000,
+        updatedAt: DateTime.now().millisecondsSinceEpoch ~/ 1000,
+      ),
+      Message(
+        id: 3,
+        content: 'Wie geht es dir?',
+        correction: 'Wie geht es Ihnen?',
+        translation: 'How are you?',
+        conversationId: 1,
+        isUserMessage: false,
+        createdAt: DateTime.now().millisecondsSinceEpoch ~/ 1000,
+        updatedAt: DateTime.now().millisecondsSinceEpoch ~/ 1000,
+      ),
+    ];
+
     return Scaffold(
       appBar: AppBar(
         title: Center(
@@ -69,7 +103,12 @@ class _ConversationPageState extends State<ConversationPage> {
           Expanded(
             child: ListView(
               shrinkWrap: false,
-              children: [],
+              children: [
+                for (var message in gptMessages)
+                  GPTMessage(
+                    message: message,
+                  ),
+              ],
             ),
           ),
         ],
