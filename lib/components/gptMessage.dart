@@ -19,7 +19,7 @@ class _GPTMessageState extends State<GPTMessage> {
     var theme = Theme.of(context);
 
     return Container(
-      margin: const EdgeInsets.fromLTRB(50, 0, 0, 0),
+      margin: const EdgeInsets.fromLTRB(50, 0, 0, 20),
       decoration: BoxDecoration(
         color: theme.colorScheme.surface,
         borderRadius: BorderRadius.circular(10),
