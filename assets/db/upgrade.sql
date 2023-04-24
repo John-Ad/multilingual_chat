@@ -8,7 +8,7 @@ create table
         updated_at timestamp not null default current_timestamp
     );
 
-drop table EXISTS Message;
+drop table Message;
 
 create table
     Message(
@@ -22,3 +22,7 @@ create table
         updated_at timestamp not null default current_timestamp,
         foreign key (conversation_id) references Conversation(id)
     );
+
+drop table Settings;
+
+create table Settings( api_key text );
