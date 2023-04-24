@@ -28,11 +28,13 @@ class ConversationPage extends StatefulWidget {
 }
 
 class _ConversationPageState extends State<ConversationPage> {
+  final ScrollController _scrollController = ScrollController();
   final TextEditingController _newMessageController = TextEditingController();
   final MessagesService _messagesService = MessagesService();
   late FToast fToast;
   bool loadingMessages = false;
   List<Message> _messages = [];
+  int _messageCount = 0;
 
   bool _generatingResponse = false;
 
@@ -44,7 +46,38 @@ class _ConversationPageState extends State<ConversationPage> {
     _getMessages();
   }
 
-  Future<void> _getMessages() async {}
+  @override
+  void didUpdateWidget(ConversationPage old) {
+    super.didUpdateWidget(old);
+
+    if (_messageCount != _messages.length) {
+      _scrollToBottomOfMessages();
+      setState(() {
+        _messageCount = _messages.length;
+      });
+    }
+  }
+
+  void _scrollToBottomOfMessages() {
+    _scrollController.animateTo(
+      _scrollController.position.maxScrollExtent,
+      duration: const Duration(milliseconds: 500),
+      curve: Curves.easeOut,
+    );
+  }
+
+  Future<void> _getMessages() async {
+    setState(() {
+      loadingMessages = true;
+    });
+
+    var result = await _messagesService.getMessagesForConversation(widget.id);
+
+    setState(() {
+      loadingMessages = false;
+      _messages = result;
+    });
+  }
 
   Future<void> _addMessage() async {
     var message = _newMessageController.text;
@@ -229,6 +262,7 @@ class _ConversationPageState extends State<ConversationPage> {
                 child: Padding(
                   padding: const EdgeInsets.fromLTRB(0, 0, 0, 90),
                   child: ListView(
+                    controller: _scrollController,
                     shrinkWrap: false,
                     children: [
                       for (var message in gptMessages)
