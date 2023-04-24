@@ -1,3 +1,5 @@
+create table Settings(api_key text DEFAULT '');
+
 create table
     Conversation(
         id integer primary key autoincrement,
@@ -18,5 +20,3 @@ create table
         updated_at timestamp not null default current_timestamp,
         foreign key (conversation_id) references Conversation(id)
     );
-
-create table Settings( api_key text DEFAULT '' );

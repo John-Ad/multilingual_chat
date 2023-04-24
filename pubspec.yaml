@@ -24,6 +24,7 @@ flutter:
 
   assets:
     - assets/db/init.sql
+    - assets/db/upgrade.sql
 
   # To add assets to your application, add an assets section, like this:
   # assets:
