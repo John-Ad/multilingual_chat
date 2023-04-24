@@ -28,11 +28,11 @@ class GPTRequestData {
 
   Map<String, dynamic> toJson() => {
         "model": model,
-        "prompt": messages,
+        "messages": messages,
         "n": n,
         "max_tokens": max_tokens,
-        "temperature": temperature,
-        "frequency_penalty": frequency_penalty,
-        "presence_penalty": presence_penalty,
+        "temperature": temperature ?? 0.0,
+        "frequency_penalty": frequency_penalty ?? 0.0,
+        "presence_penalty": presence_penalty ?? 0.0,
       };
 }

@@ -5,8 +5,8 @@ class Message {
   String? correction;
   String content;
   String? translation;
-  int createdAt;
-  int updatedAt;
+  String createdAt;
+  String updatedAt;
 
   Message({
     required this.id,
@@ -21,7 +21,7 @@ class Message {
 
   factory Message.fromMap(Map<String, dynamic> json) => Message(
         id: json["id"],
-        isUserMessage: json["is_user_message"],
+        isUserMessage: json["is_user_message"] == 1 ? true : false,
         conversationId: json["conversation_id"],
         correction: json["correction"],
         content: json["content"],

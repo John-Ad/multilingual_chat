@@ -43,7 +43,7 @@ class MessagesService {
       return result;
     } catch (e) {
       if (kDebugMode) {
-        debugPrint("MessagesService: $e");
+        debugPrint("MessagesService getAll: $e");
       }
       return [];
     }

@@ -82,7 +82,8 @@ class _ConversationPageState extends State<ConversationPage> {
   Future<void> _addMessage() async {
     var message = _newMessageController.text;
 
-    _newMessageController.clear();
+    _newMessageController.clearComposing();
+    _newMessageController.text = "";
 
     var result = await _addUserMessage(message);
     if (!result) {
@@ -100,7 +101,7 @@ class _ConversationPageState extends State<ConversationPage> {
   }
 
   Future<bool> _addUserMessage(String message) async {
-    if (_newMessageController.text.isEmpty) {
+    if (message.isEmpty) {
       fToast.showToast(child: const ErrorToast(message: "Enter a message."));
       return false;
     }
@@ -166,8 +167,8 @@ class _ConversationPageState extends State<ConversationPage> {
         translation: 'Hello, how are you?',
         conversationId: 1,
         isUserMessage: false,
-        createdAt: DateTime.now().millisecondsSinceEpoch ~/ 1000,
-        updatedAt: DateTime.now().millisecondsSinceEpoch ~/ 1000,
+        createdAt: (DateTime.now().millisecondsSinceEpoch ~/ 1000).toString(),
+        updatedAt: (DateTime.now().millisecondsSinceEpoch ~/ 1000).toString(),
       ),
       Message(
         id: 2,
@@ -176,8 +177,8 @@ class _ConversationPageState extends State<ConversationPage> {
         translation: 'I\'m fine, thank you.',
         conversationId: 1,
         isUserMessage: true,
-        createdAt: DateTime.now().millisecondsSinceEpoch ~/ 1000,
-        updatedAt: DateTime.now().millisecondsSinceEpoch ~/ 1000,
+        createdAt: (DateTime.now().millisecondsSinceEpoch ~/ 1000).toString(),
+        updatedAt: (DateTime.now().millisecondsSinceEpoch ~/ 1000).toString(),
       ),
       Message(
         id: 3,
@@ -185,8 +186,8 @@ class _ConversationPageState extends State<ConversationPage> {
         correction: 'Wie geht es Ihnen?',
         conversationId: 1,
         isUserMessage: false,
-        createdAt: DateTime.now().millisecondsSinceEpoch ~/ 1000,
-        updatedAt: DateTime.now().millisecondsSinceEpoch ~/ 1000,
+        createdAt: (DateTime.now().millisecondsSinceEpoch ~/ 1000).toString(),
+        updatedAt: (DateTime.now().millisecondsSinceEpoch ~/ 1000).toString(),
       ),
     ];
 
@@ -197,8 +198,8 @@ class _ConversationPageState extends State<ConversationPage> {
         translation: 'I\'m fine, thank you.',
         conversationId: 1,
         isUserMessage: true,
-        createdAt: DateTime.now().millisecondsSinceEpoch ~/ 1000,
-        updatedAt: DateTime.now().millisecondsSinceEpoch ~/ 1000,
+        createdAt: (DateTime.now().millisecondsSinceEpoch ~/ 1000).toString(),
+        updatedAt: (DateTime.now().millisecondsSinceEpoch ~/ 1000).toString(),
       ),
       Message(
         id: 5,
@@ -206,8 +207,8 @@ class _ConversationPageState extends State<ConversationPage> {
         correction: 'Wie geht es Ihnen?',
         conversationId: 1,
         isUserMessage: false,
-        createdAt: DateTime.now().millisecondsSinceEpoch ~/ 1000,
-        updatedAt: DateTime.now().millisecondsSinceEpoch ~/ 1000,
+        createdAt: (DateTime.now().millisecondsSinceEpoch ~/ 1000).toString(),
+        updatedAt: (DateTime.now().millisecondsSinceEpoch ~/ 1000).toString(),
       ),
     ];
 
@@ -252,7 +253,7 @@ class _ConversationPageState extends State<ConversationPage> {
               Padding(
                 padding: const EdgeInsets.fromLTRB(0, 40, 0, 20),
                 child: Text(
-                  'Conversations',
+                  widget.topic,
                   style: theme.textTheme.headlineSmall!.copyWith(
                     color: theme.colorScheme.onPrimary,
                   ),
@@ -265,14 +266,15 @@ class _ConversationPageState extends State<ConversationPage> {
                     controller: _scrollController,
                     shrinkWrap: false,
                     children: [
-                      for (var message in gptMessages)
-                        GPTMessage(
-                          message: message,
-                        ),
-                      for (var message in userMessages)
-                        UserMessage(
-                          message: message,
-                        ),
+                      for (var message in _messages)
+                        if (message.isUserMessage)
+                          UserMessage(
+                            message: message,
+                          )
+                        else
+                          GPTMessage(
+                            message: message,
+                          )
                     ],
                   ),
                 ),
