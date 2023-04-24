@@ -1,6 +1,10 @@
 drop table Settings;
 
-create table Settings( api_key text DEFAULT '' );
+create table
+    Settings(
+        id int primary key,
+        api_key text DEFAULT ''
+    );
 
 drop table Conversation;
 
@@ -26,3 +30,5 @@ create table
         updated_at timestamp not null default current_timestamp,
         foreign key (conversation_id) references Conversation(id)
     );
+
+insert into Settings(id, api_key) values(1,'');

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:german_tutor/components/gptMessage.dart';
 import 'package:german_tutor/models/conversation.dart';
 import 'package:german_tutor/services/CoversationsService.dart';
+import 'package:german_tutor/views/settings.dart';
 
 import '../components/userMessage.dart';
 import '../models/message.dart';
@@ -109,6 +110,21 @@ class _ConversationPageState extends State<ConversationPage> {
             color: theme.colorScheme.onPrimary,
           ),
         ),
+        actions: [
+          IconButton(
+            onPressed: () => {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => SettingsPage(title: widget.title)),
+              )
+            },
+            icon: Icon(
+              Icons.settings,
+              color: theme.colorScheme.onPrimary,
+            ),
+          )
+        ],
       ),
       body: Column(
         children: [

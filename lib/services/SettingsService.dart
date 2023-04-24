@@ -31,6 +31,8 @@ class SettingsService {
 
       var settings = await db.query('Settings', limit: 1);
 
+      debugPrint(settings.toString());
+
       return Settings.fromMap(settings[0]);
     } catch (e) {
       if (kDebugMode) {
@@ -51,7 +53,8 @@ class SettingsService {
         await init();
       }
 
-      await db.update('Settings', settings.toMap());
+      await db.update('Settings', settings.toMap(),
+          where: 'id = ?', whereArgs: [settings.id]);
 
       return true;
     } catch (e) {

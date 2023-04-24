@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:german_tutor/components/toasts.dart';
 import 'package:german_tutor/services/TopicGeneratorService.dart';
 import 'package:german_tutor/views/conversation.dart';
+import 'package:german_tutor/views/settings.dart';
 
 import '../services/CoversationsService.dart';
 
@@ -98,6 +99,21 @@ class _NewConversationState extends State<NewConversation> {
             color: theme.colorScheme.onPrimary,
           ),
         ),
+        actions: [
+          IconButton(
+            onPressed: () => {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => SettingsPage(title: widget.title)),
+              )
+            },
+            icon: Icon(
+              Icons.settings,
+              color: theme.colorScheme.onPrimary,
+            ),
+          )
+        ],
       ),
       body: SingleChildScrollView(
         child: Container(

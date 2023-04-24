@@ -29,10 +29,12 @@ class _SettingsPageState extends State<SettingsPage> {
   }
 
   Future<void> _getSettings() async {
+    debugPrint("Getting settings");
     setState(() {
       loading = true;
     });
 
+    debugPrint("Getting settings 2");
     var result = await settingsService.getSettings();
 
     if (result != null) {
