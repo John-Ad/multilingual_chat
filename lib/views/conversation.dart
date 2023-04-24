@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:german_tutor/components/gptMessage.dart';
+import 'package:german_tutor/components/toasts.dart';
 import 'package:german_tutor/models/conversation.dart';
 import 'package:german_tutor/services/CoversationsService.dart';
+import 'package:german_tutor/services/GPTService.dart';
+import 'package:german_tutor/services/MessagesService.dart';
 import 'package:german_tutor/views/settings.dart';
 
 import '../components/userMessage.dart';
@@ -25,16 +29,97 @@ class ConversationPage extends StatefulWidget {
 
 class _ConversationPageState extends State<ConversationPage> {
   final TextEditingController _newMessageController = TextEditingController();
+  final MessagesService _messagesService = MessagesService();
+  late FToast fToast;
   bool loadingMessages = false;
   List<Message> _messages = [];
+
+  bool _generatingResponse = false;
 
   @override
   void initState() {
     super.initState();
+    fToast = FToast();
+    fToast.init(context);
     _getMessages();
   }
 
   Future<void> _getMessages() async {}
+
+  Future<void> _addMessage() async {
+    var message = _newMessageController.text;
+
+    _newMessageController.clear();
+
+    var result = await _addUserMessage(message);
+    if (!result) {
+      _newMessageController.text = message;
+      return;
+    }
+
+    result = await _addGPTMessage(message);
+    if (!result) {
+      _newMessageController.text = message;
+      return;
+    }
+
+    _getMessages();
+  }
+
+  Future<bool> _addUserMessage(String message) async {
+    if (_newMessageController.text.isEmpty) {
+      fToast.showToast(child: const ErrorToast(message: "Enter a message."));
+      return false;
+    }
+
+    var id = await _messagesService.add(widget.id, message, true);
+    if (id <= 0) {
+      fToast.showToast(
+          child: const ErrorToast(message: "Error saving message."));
+      return false;
+    }
+
+    await _getMessages();
+
+    return true;
+  }
+
+  Future<bool> _addGPTMessage(String message) async {
+    setState(() {
+      _generatingResponse = true;
+    });
+
+    var response = await GPTService.getGermanResponse(message);
+    var correction = await GPTService.getGermanCorrection(message);
+
+    if (response.isEmpty || correction.isEmpty) {
+      fToast.showToast(
+          child: const ErrorToast(message: "Error generating a response"));
+      return false;
+    }
+
+    var id = await _messagesService.add(widget.id, response, false);
+
+    if (id <= 0) {
+      fToast.showToast(
+          child: const ErrorToast(message: "Error generating a response"));
+      return false;
+    }
+
+    var updated = await _messagesService.update(id, correction, null);
+
+    if (!updated) {
+      fToast.showToast(
+          child: const ErrorToast(message: "Error generating a response"));
+      return false;
+    }
+
+    setState(() {
+      _generatingResponse = false;
+    });
+
+    return true;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -206,7 +291,7 @@ class _ConversationPageState extends State<ConversationPage> {
                     ),
                   ),
                   IconButton(
-                    onPressed: () => {},
+                    onPressed: () async => {_addMessage()},
                     icon: const Icon(
                       Icons.send,
                     ),
