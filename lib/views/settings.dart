@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:german_tutor/services/SettingsService.dart';
+
+import '../models/settings.dart';
 
 class SettingsPage extends StatefulWidget {
   final String title;
@@ -13,11 +16,47 @@ class SettingsPage extends StatefulWidget {
 }
 
 class _SettingsPageState extends State<SettingsPage> {
+  SettingsService settingsService = SettingsService();
+  final TextEditingController _apiKeyController = TextEditingController();
+
   bool loading = false;
+  Settings? settings;
 
   @override
   void initState() {
     super.initState();
+    _getSettings();
+  }
+
+  Future<void> _getSettings() async {
+    setState(() {
+      loading = true;
+    });
+
+    var result = await settingsService.getSettings();
+
+    if (result != null) {
+      _apiKeyController.text = result.apiKey;
+    }
+
+    setState(() {
+      loading = false;
+      settings = result;
+    });
+  }
+
+  Future<void> _updateSettings() async {
+    if (settings == null) return;
+
+    setState(() {
+      loading = true;
+    });
+
+    await settingsService.updateSettings(settings!);
+
+    setState(() {
+      loading = false;
+    });
   }
 
   @override
@@ -57,7 +96,35 @@ class _SettingsPageState extends State<SettingsPage> {
           Expanded(
             child: ListView(
               shrinkWrap: false,
-              children: [],
+              children: [
+                if (settings == null) Text("No settings found."),
+                if (settings != null)
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Padding(
+                        padding: EdgeInsets.fromLTRB(0, 8, 16, 0),
+                        child: Text("API Key:"),
+                      ),
+                      Expanded(
+                        child: TextField(
+                          controller: _apiKeyController,
+                          decoration: InputDecoration(
+                            hintText: 'Enter API Key',
+                          ),
+                          onChanged: (value) {
+                            settings!.apiKey = value;
+                          },
+                        ),
+                      )
+                    ],
+                  ),
+                if (settings != null)
+                  ElevatedButton(
+                    onPressed: () => {_updateSettings()},
+                    child: Text("Save"),
+                  ),
+              ],
             ),
           ),
         ],

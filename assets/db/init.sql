@@ -19,4 +19,4 @@ create table
         foreign key (conversation_id) references Conversation(id)
     );
 
-create table Settings( api_key text );
+create table Settings( api_key text DEFAULT '' );

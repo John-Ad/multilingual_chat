@@ -25,4 +25,4 @@ create table
 
 drop table Settings;
 
-create table Settings( api_key text );
+create table Settings( api_key text DEFAULT '' );
