@@ -24,6 +24,7 @@ class ConversationPage extends StatefulWidget {
 }
 
 class _ConversationPageState extends State<ConversationPage> {
+  final TextEditingController _newMessageController = TextEditingController();
   bool loadingMessages = false;
   List<Message> _messages = [];
 
@@ -126,30 +127,92 @@ class _ConversationPageState extends State<ConversationPage> {
           )
         ],
       ),
-      body: Column(
+      body: Stack(
         children: [
-          Padding(
-            padding: const EdgeInsets.fromLTRB(0, 40, 0, 20),
-            child: Text(
-              'Conversations',
-              style: theme.textTheme.headlineSmall!.copyWith(
-                color: theme.colorScheme.onPrimary,
+          Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.fromLTRB(0, 40, 0, 20),
+                child: Text(
+                  'Conversations',
+                  style: theme.textTheme.headlineSmall!.copyWith(
+                    color: theme.colorScheme.onPrimary,
+                  ),
+                ),
               ),
-            ),
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(0, 0, 0, 90),
+                  child: ListView(
+                    shrinkWrap: false,
+                    children: [
+                      for (var message in gptMessages)
+                        GPTMessage(
+                          message: message,
+                        ),
+                      for (var message in userMessages)
+                        UserMessage(
+                          message: message,
+                        ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
           ),
-          Expanded(
-            child: ListView(
-              shrinkWrap: false,
-              children: [
-                for (var message in gptMessages)
-                  GPTMessage(
-                    message: message,
+
+          // send message
+          Positioned(
+            left: 0,
+            right: 0,
+            bottom: 0,
+            child: Container(
+              width: MediaQuery.of(context).size.width,
+              height: 80,
+              decoration: BoxDecoration(
+                color: theme.colorScheme.primary,
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  SizedBox(
+                    width: MediaQuery.of(context).size.width * 0.85,
+                    child: Theme(
+                      data: Theme.of(context).copyWith(
+                        textSelectionTheme: TextSelectionThemeData(
+                          selectionColor: theme.colorScheme.surface,
+                        ),
+                      ),
+                      child: TextField(
+                        controller: _newMessageController,
+                        cursorColor: theme.colorScheme.onPrimary,
+                        style: theme.textTheme.bodyLarge!.copyWith(
+                          color: theme.colorScheme.onPrimary,
+                        ),
+                        maxLines: 4,
+                        decoration: InputDecoration(
+                          isDense: true,
+                          fillColor: theme.colorScheme.primary,
+                          filled: true,
+                          border: const OutlineInputBorder(
+                            borderSide: BorderSide.none,
+                          ),
+                          hintText: 'Enter a message',
+                          hintStyle: theme.textTheme.bodyLarge!.copyWith(
+                            color: theme.colorScheme.onPrimary.withOpacity(0.3),
+                          ),
+                        ),
+                      ),
+                    ),
                   ),
-                for (var message in userMessages)
-                  UserMessage(
-                    message: message,
+                  IconButton(
+                    onPressed: () => {},
+                    icon: const Icon(
+                      Icons.send,
+                    ),
                   ),
-              ],
+                ],
+              ),
             ),
           ),
         ],
