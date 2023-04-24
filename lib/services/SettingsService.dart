@@ -53,6 +53,8 @@ class SettingsService {
         await init();
       }
 
+      debugPrint("Updating settings: ${settings.toMap()}");
+
       await db.update('Settings', settings.toMap(),
           where: 'id = ?', whereArgs: [settings.id]);
 
