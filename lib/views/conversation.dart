@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:german_tutor/components/gptMessage.dart';
+import 'package:german_tutor/components/isTypingAnimation.dart';
 import 'package:german_tutor/components/toasts.dart';
 import 'package:german_tutor/models/conversation.dart';
 import 'package:german_tutor/services/CoversationsService.dart';
@@ -274,7 +275,8 @@ class _ConversationPageState extends State<ConversationPage> {
                         else
                           GPTMessage(
                             message: message,
-                          )
+                          ),
+                      IsTypingAnimation(),
                     ],
                   ),
                 ),
