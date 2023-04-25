@@ -29,6 +29,10 @@ class _UserMessageState extends State<UserMessage> {
           // content
           Text(
             widget.message.content,
+            style: theme.textTheme.bodyMedium!.copyWith(
+              color: theme.colorScheme.onPrimary.withAlpha(178),
+              fontFamily: "OpenSans",
+            ),
           ),
 
           // translation
@@ -37,6 +41,7 @@ class _UserMessageState extends State<UserMessage> {
               widget.message.translation!,
               style: theme.textTheme.bodyMedium!.copyWith(
                 backgroundColor: theme.colorScheme.primary,
+                fontFamily: "OpenSans",
               ),
             ),
         ],

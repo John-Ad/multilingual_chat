@@ -72,8 +72,9 @@ class GPTService {
       );
 
       if (response.statusCode == 200) {
-        final jsonResponse = json.decode(response.body);
-        final returnMessage = jsonResponse['choices'][0]['message'];
+        final responseData = utf8.decode(response.bodyBytes);
+        final jsonData = json.decode(responseData);
+        final returnMessage = jsonData['choices'][0]['message'];
         return returnMessage['content'];
       } else {
         debugPrint(response.body);

@@ -30,22 +30,26 @@ class _GPTMessageState extends State<GPTMessage> {
           if (widget.message.correction != null)
             Text(
               """
-              Response:
+              Correction:
 
               ${widget.message.correction!}
               """,
               style: theme.textTheme.bodyMedium!.copyWith(
                 color: theme.colorScheme.onPrimary.withAlpha(178),
+                fontFamily: "OpenSans",
               ),
             ),
 
           // response
           Text(
             """
-            Correction:
+            Response:
 
             ${widget.message.content}
             """,
+            style: theme.textTheme.bodyMedium!.copyWith(
+              fontFamily: "OpenSans",
+            ),
           ),
 
           // translation
@@ -54,6 +58,7 @@ class _GPTMessageState extends State<GPTMessage> {
               widget.message.translation!,
               style: theme.textTheme.bodyMedium!.copyWith(
                 backgroundColor: theme.colorScheme.primary,
+                fontFamily: "OpenSans",
               ),
             ),
         ],
