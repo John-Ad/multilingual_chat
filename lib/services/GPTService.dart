@@ -73,8 +73,8 @@ class GPTService {
 
       if (response.statusCode == 200) {
         final jsonResponse = json.decode(response.body);
-        final text = jsonResponse['choices'][0]['message'].toString();
-        return text;
+        final returnMessage = jsonResponse['choices'][0]['message'];
+        return returnMessage['content'];
       } else {
         debugPrint(response.body);
         throw Exception('Failed to generate text: ${response.statusCode}');
