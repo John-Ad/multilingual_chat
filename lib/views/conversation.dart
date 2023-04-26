@@ -115,8 +115,15 @@ class _ConversationPageState extends State<ConversationPage> {
       _generatingResponse = true;
     });
 
-    var response = await GPTService.getGermanResponse(message);
-    var correction = await GPTService.getGermanCorrection(message);
+    // get last 2 messages before very the last message
+    var lastTwoMessages = _messages.reversed.skip(1).take(2).toList();
+
+    var response = await GPTService.getGermanResponse(lastTwoMessages, message);
+    var correction = await GPTService.getGermanCorrection([], message);
+
+    setState(() {
+      _generatingResponse = false;
+    });
 
     if (response.isEmpty || correction.isEmpty) {
       fToast.showToast(
@@ -139,10 +146,6 @@ class _ConversationPageState extends State<ConversationPage> {
           child: const ErrorToast(message: "Error generating a response"));
       return false;
     }
-
-    setState(() {
-      _generatingResponse = false;
-    });
 
     return true;
   }
