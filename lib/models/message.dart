@@ -29,4 +29,17 @@ class Message {
         createdAt: json["created_at"],
         updatedAt: json["updated_at"],
       );
+
+  Message copyWith({required String translation}) {
+    return Message(
+      id: this.id,
+      isUserMessage: this.isUserMessage,
+      conversationId: this.conversationId,
+      correction: this.correction,
+      content: this.content,
+      translation: translation,
+      createdAt: this.createdAt,
+      updatedAt: this.updatedAt,
+    );
+  }
 }
