@@ -196,7 +196,7 @@ class _ConversationPageState extends State<ConversationPage> {
           Column(
             children: [
               Padding(
-                padding: const EdgeInsets.fromLTRB(0, 40, 0, 20),
+                padding: const EdgeInsets.fromLTRB(20, 40, 20, 20),
                 child: Text(
                   widget.topic,
                   style: theme.textTheme.headlineSmall!.copyWith(
