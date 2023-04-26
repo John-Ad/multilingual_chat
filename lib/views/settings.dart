@@ -20,6 +20,9 @@ class SettingsPage extends StatefulWidget {
 class _SettingsPageState extends State<SettingsPage> {
   SettingsService settingsService = SettingsService();
   final TextEditingController _apiKeyController = TextEditingController();
+  final TextEditingController _maxTokensController = TextEditingController();
+  final TextEditingController _contextMessagesCountController =
+      TextEditingController();
   late FToast fToast;
 
   bool loading = false;
@@ -44,6 +47,9 @@ class _SettingsPageState extends State<SettingsPage> {
 
     if (result != null) {
       _apiKeyController.text = result.apiKey;
+      _maxTokensController.text = result.maxTokens.toString();
+      _contextMessagesCountController.text =
+          result.contextMessagesCount.toString();
     }
 
     setState(() {
@@ -57,14 +63,34 @@ class _SettingsPageState extends State<SettingsPage> {
     if (_apiKeyController.text.isEmpty) {
       fToast.showToast(
           child: const ErrorToast(message: "API Key cannot be empty"));
+      return;
+    }
+
+    int? maxTokens = int.tryParse(_maxTokensController.text);
+    int? contextMessageCount =
+        int.tryParse(_contextMessagesCountController.text);
+
+    if (maxTokens == null) {
+      fToast.showToast(
+          child: const ErrorToast(message: "Invalid max tokens value"));
+      return;
+    }
+    if (contextMessageCount == null) {
+      fToast.showToast(
+          child: const ErrorToast(message: "Invalid context messages value"));
+      return;
     }
 
     setState(() {
       loading = true;
     });
 
-    if (await settingsService.updateSettings(
-        Settings(id: settings!.id, apiKey: _apiKeyController.text))) {
+    if (await settingsService.updateSettings(Settings(
+      id: settings!.id,
+      apiKey: _apiKeyController.text,
+      maxTokens: maxTokens!,
+      contextMessagesCount: contextMessageCount!,
+    ))) {
       fToast.showToast(child: const SuccessToast(message: "Settings saved"));
     } else {
       fToast.showToast(
@@ -116,22 +142,27 @@ class _SettingsPageState extends State<SettingsPage> {
               children: [
                 if (settings == null) const Text("No settings found."),
                 if (settings != null)
+                  // API Key
                   Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: Row(
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        Padding(
-                          padding: const EdgeInsets.fromLTRB(10, 0, 16, 0),
-                          child: Text(
-                            "API Key:",
-                            style: TextStyle(
-                              fontSize: 20,
-                              color: theme.colorScheme.onPrimary,
+                        Expanded(
+                          flex: 3,
+                          child: Padding(
+                            padding: const EdgeInsets.fromLTRB(10, 0, 16, 0),
+                            child: Text(
+                              "API Key:",
+                              style: TextStyle(
+                                fontSize: 20,
+                                color: theme.colorScheme.onPrimary,
+                              ),
                             ),
                           ),
                         ),
                         Expanded(
+                          flex: 4,
                           child: Theme(
                             data: Theme.of(context).copyWith(
                               textSelectionTheme: TextSelectionThemeData(
@@ -171,6 +202,133 @@ class _SettingsPageState extends State<SettingsPage> {
                       ],
                     ),
                   ),
+                // Max tokens
+                if (settings != null)
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Expanded(
+                          flex: 3,
+                          child: Padding(
+                            padding: const EdgeInsets.fromLTRB(10, 0, 16, 0),
+                            child: Text(
+                              "Max tokens:",
+                              style: TextStyle(
+                                fontSize: 20,
+                                color: theme.colorScheme.onPrimary,
+                              ),
+                            ),
+                          ),
+                        ),
+                        Expanded(
+                          flex: 4,
+                          child: Theme(
+                            data: Theme.of(context).copyWith(
+                              textSelectionTheme: TextSelectionThemeData(
+                                selectionColor: theme.colorScheme.surface,
+                              ),
+                            ),
+                            child: TextField(
+                              controller: _maxTokensController,
+                              keyboardType: TextInputType.number,
+                              cursorColor: theme.colorScheme.onPrimary,
+                              style: theme.textTheme.bodyLarge!.copyWith(
+                                color: theme.colorScheme.onPrimary,
+                              ),
+                              maxLines: 1,
+                              decoration: InputDecoration(
+                                contentPadding:
+                                    const EdgeInsets.fromLTRB(0, 1, 20, 1),
+                                isDense: true,
+                                fillColor: theme.colorScheme.primary,
+                                filled: true,
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(10.0),
+                                  borderSide: BorderSide.none,
+                                ),
+                                hintText:
+                                    'Enter max tokens gpt should generate',
+                                hintStyle: theme.textTheme.bodyLarge!.copyWith(
+                                  color: theme.colorScheme.onPrimary
+                                      .withOpacity(0.3),
+                                ),
+                                prefixIcon: Icon(
+                                  Icons.edit,
+                                  color: theme.colorScheme.onPrimary,
+                                ),
+                              ),
+                            ),
+                          ),
+                        )
+                      ],
+                    ),
+                  ),
+                // Num of context messages to include
+                if (settings != null)
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Expanded(
+                          flex: 3,
+                          child: Padding(
+                            padding: const EdgeInsets.fromLTRB(10, 0, 16, 0),
+                            child: Text(
+                              "Context count:",
+                              style: TextStyle(
+                                fontSize: 20,
+                                color: theme.colorScheme.onPrimary,
+                              ),
+                            ),
+                          ),
+                        ),
+                        Expanded(
+                          flex: 4,
+                          child: Theme(
+                            data: Theme.of(context).copyWith(
+                              textSelectionTheme: TextSelectionThemeData(
+                                selectionColor: theme.colorScheme.surface,
+                              ),
+                            ),
+                            child: TextField(
+                              controller: _contextMessagesCountController,
+                              keyboardType: TextInputType.number,
+                              cursorColor: theme.colorScheme.onPrimary,
+                              style: theme.textTheme.bodyLarge!.copyWith(
+                                color: theme.colorScheme.onPrimary,
+                              ),
+                              maxLines: 1,
+                              decoration: InputDecoration(
+                                contentPadding:
+                                    const EdgeInsets.fromLTRB(0, 1, 20, 1),
+                                isDense: true,
+                                fillColor: theme.colorScheme.primary,
+                                filled: true,
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(10.0),
+                                  borderSide: BorderSide.none,
+                                ),
+                                hintText:
+                                    'Enter number of prev messages to include in new prompts',
+                                hintStyle: theme.textTheme.bodyLarge!.copyWith(
+                                  color: theme.colorScheme.onPrimary
+                                      .withOpacity(0.3),
+                                ),
+                                prefixIcon: Icon(
+                                  Icons.edit,
+                                  color: theme.colorScheme.onPrimary,
+                                ),
+                              ),
+                            ),
+                          ),
+                        )
+                      ],
+                    ),
+                  ),
+                // save button
                 if (settings != null)
                   Padding(
                     padding: const EdgeInsets.fromLTRB(10, 20, 10, 0),
