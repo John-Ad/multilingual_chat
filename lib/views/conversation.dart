@@ -116,7 +116,8 @@ class _ConversationPageState extends State<ConversationPage> {
     });
 
     // get last 2 messages before very the last message
-    var lastTwoMessages = _messages.reversed.skip(1).take(2).toList();
+    var lastTwoMessages =
+        _messages.reversed.skip(1).take(2).toList().reversed.toList();
 
     var response = await GPTService.getGermanResponse(lastTwoMessages, message);
     var correction = await GPTService.getGermanCorrection([], message);
