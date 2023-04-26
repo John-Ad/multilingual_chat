@@ -13,7 +13,7 @@ class GPTService {
   static const _model = "gpt-3.5-turbo";
 
   static const String _germanResponsePrompt = """
-  respond shortly in german:
+  shortly respond in german:
   (prompt)
   """;
 
@@ -23,7 +23,7 @@ class GPTService {
   """;
 
   static const String _germanCorrectionPrompt = """
-  in german shortly correct no explanation:
+  shortly correct the following german without an explanation:
   (prompt)
   """;
 
