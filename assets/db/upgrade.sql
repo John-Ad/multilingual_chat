@@ -3,7 +3,9 @@ drop table Settings;
 create table
     Settings(
         id int primary key,
-        api_key text DEFAULT ''
+        api_key text DEFAULT '',
+        max_tokens int DEFAULT 100,
+        context_messages_count int DEFAULT 3
     );
 
 drop table Conversation;

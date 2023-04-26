@@ -31,7 +31,7 @@ class SettingsService {
 
       var settings = await db.query('Settings', limit: 1);
 
-      debugPrint(settings.toString());
+      debugPrint("Settings: ${settings.toString()}");
 
       return Settings.fromMap(settings[0]);
     } catch (e) {
