@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:german_tutor/models/conversation.dart';
+import '../models/conversation.dart';
+import '../views/conversation.dart';
 
 class HomeConversation extends StatelessWidget {
   final Conversation conversation;
@@ -29,7 +30,17 @@ class HomeConversation extends StatelessWidget {
           children: [
             Expanded(
               child: GestureDetector(
-                onTap: () => {debugPrint("tapped")},
+                onTap: () => {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => ConversationPage(
+                              title: "German Tutor",
+                              id: conversation.id,
+                              topic: conversation.name,
+                            )),
+                  )
+                },
                 child: Padding(
                   padding: const EdgeInsets.fromLTRB(20, 0, 0, 0),
                   child: SingleChildScrollView(

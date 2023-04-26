@@ -1,8 +1,12 @@
+drop table Settings;
+
 create table
     Settings(
         id int primary key,
         api_key text DEFAULT ''
     );
+
+drop table Conversation;
 
 create table
     Conversation(
@@ -11,6 +15,8 @@ create table
         created_at timestamp not null default current_timestamp,
         updated_at timestamp not null default current_timestamp
     );
+
+drop table Message;
 
 create table
     Message(

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:german_tutor/components/homeConversation.dart';
 import 'package:german_tutor/models/conversation.dart';
 import 'package:german_tutor/services/CoversationsService.dart';
+import 'package:german_tutor/views/settings.dart';
 
 import '../main.dart';
 import 'newConversation.dart';
@@ -70,6 +71,21 @@ class _HomeState extends State<Home> with RouteAware {
             ),
           ),
         ),
+        actions: [
+          IconButton(
+            onPressed: () => {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => SettingsPage(title: widget.title)),
+              )
+            },
+            icon: Icon(
+              Icons.settings,
+              color: theme.colorScheme.onPrimary,
+            ),
+          )
+        ],
         backgroundColor: theme.primaryColor,
       ),
       body: Column(
