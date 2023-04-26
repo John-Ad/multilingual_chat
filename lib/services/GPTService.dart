@@ -50,13 +50,19 @@ class GPTService {
     try {
       final settings = await _settingsService.getSettings();
       if (settings == null) {
-        throw Exception('Failed to load api key');
+        throw Exception('Failed to load settings');
       }
 
       final apiKey = settings.apiKey;
+      final maxTokens = settings.maxTokens;
+      final contextMessagesCount = settings.contextMessagesCount;
       if (apiKey.isEmpty) {
         throw Exception('Failed to load api key');
       }
+
+      var skipCount = contextMessages.length - contextMessagesCount;
+      contextMessages =
+          contextMessages.skip(skipCount < 0 ? 0 : skipCount).toList();
 
       final List<GPTRequestMessage> contextReqMessages = contextMessages
           .map((e) => GPTRequestMessage(
@@ -80,7 +86,7 @@ class GPTService {
           model: _model,
           messages: [...contextReqMessages, reqMessage],
           n: 1,
-          max_tokens: 100,
+          max_tokens: maxTokens,
         )),
       );
 
