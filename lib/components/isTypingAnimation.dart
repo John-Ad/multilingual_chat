@@ -31,24 +31,32 @@ class _IsTypingAnimationState extends State<IsTypingAnimation>
     _circleController2.addListener(() async {
       if (!mounted) return;
 
-      if (_circleController2.isCompleted) {
-        await Future.delayed(const Duration(milliseconds: 100));
-        _circleController2.reverse();
-      } else if (_circleController2.isDismissed) {
-        await Future.delayed(const Duration(milliseconds: 100));
-        _circleController2.forward();
+      try {
+        if (_circleController2.isCompleted) {
+          await Future.delayed(const Duration(milliseconds: 100));
+          _circleController2.reverse();
+        } else if (_circleController2.isDismissed) {
+          await Future.delayed(const Duration(milliseconds: 100));
+          _circleController2.forward();
+        }
+      } catch (e) {
+        debugPrint(e.toString());
       }
     });
 
     _circleController3.addListener(() async {
       if (!mounted) return;
 
-      if (_circleController3.isCompleted) {
-        await Future.delayed(const Duration(milliseconds: 200));
-        _circleController3.reverse();
-      } else if (_circleController3.isDismissed) {
-        await Future.delayed(const Duration(milliseconds: 200));
-        _circleController3.forward();
+      try {
+        if (_circleController3.isCompleted) {
+          await Future.delayed(const Duration(milliseconds: 200));
+          _circleController3.reverse();
+        } else if (_circleController3.isDismissed) {
+          await Future.delayed(const Duration(milliseconds: 200));
+          _circleController3.forward();
+        }
+      } catch (e) {
+        debugPrint(e.toString());
       }
     });
 
