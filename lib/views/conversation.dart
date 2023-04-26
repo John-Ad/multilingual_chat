@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:german_tutor/components/gptMessage.dart';
 import 'package:german_tutor/components/isTypingAnimation.dart';
@@ -35,8 +36,6 @@ class _ConversationPageState extends State<ConversationPage> {
   late FToast fToast;
   bool loadingMessages = false;
   List<Message> _messages = [];
-  int _messageCount = 0;
-
   bool _generatingResponse = false;
 
   @override
@@ -47,24 +46,14 @@ class _ConversationPageState extends State<ConversationPage> {
     _getMessages();
   }
 
-  @override
-  void didUpdateWidget(ConversationPage old) {
-    super.didUpdateWidget(old);
-
-    if (_messageCount != _messages.length) {
-      _scrollToBottomOfMessages();
-      setState(() {
-        _messageCount = _messages.length;
-      });
-    }
-  }
-
   void _scrollToBottomOfMessages() {
-    _scrollController.animateTo(
-      _scrollController.position.maxScrollExtent,
-      duration: const Duration(milliseconds: 500),
-      curve: Curves.easeOut,
-    );
+    SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
+      _scrollController.animateTo(
+        _scrollController.position.maxScrollExtent * 10,
+        duration: const Duration(milliseconds: 3000),
+        curve: Curves.easeOut,
+      );
+    });
   }
 
   Future<void> _getMessages() async {
@@ -78,6 +67,8 @@ class _ConversationPageState extends State<ConversationPage> {
       loadingMessages = false;
       _messages = result;
     });
+
+    _scrollToBottomOfMessages();
   }
 
   Future<void> _addMessage() async {
@@ -157,61 +148,14 @@ class _ConversationPageState extends State<ConversationPage> {
   }
 
   @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     var theme = Theme.of(context);
-
-    List<Message> gptMessages = [
-      Message(
-        id: 1,
-        content: 'Hallo, wie geht es dir?',
-        correction: 'Hallo, wie geht es Ihnen?',
-        translation: 'Hello, how are you?',
-        conversationId: 1,
-        isUserMessage: false,
-        createdAt: (DateTime.now().millisecondsSinceEpoch ~/ 1000).toString(),
-        updatedAt: (DateTime.now().millisecondsSinceEpoch ~/ 1000).toString(),
-      ),
-      Message(
-        id: 2,
-        content: 'Mir geht es gut, danke.',
-        correction: 'Mir geht es gut, danke.',
-        translation: 'I\'m fine, thank you.',
-        conversationId: 1,
-        isUserMessage: true,
-        createdAt: (DateTime.now().millisecondsSinceEpoch ~/ 1000).toString(),
-        updatedAt: (DateTime.now().millisecondsSinceEpoch ~/ 1000).toString(),
-      ),
-      Message(
-        id: 3,
-        content: 'Wie geht es dir?',
-        correction: 'Wie geht es Ihnen?',
-        conversationId: 1,
-        isUserMessage: false,
-        createdAt: (DateTime.now().millisecondsSinceEpoch ~/ 1000).toString(),
-        updatedAt: (DateTime.now().millisecondsSinceEpoch ~/ 1000).toString(),
-      ),
-    ];
-
-    List<Message> userMessages = [
-      Message(
-        id: 4,
-        content: 'Mir geht es gut, danke.',
-        translation: 'I\'m fine, thank you.',
-        conversationId: 1,
-        isUserMessage: true,
-        createdAt: (DateTime.now().millisecondsSinceEpoch ~/ 1000).toString(),
-        updatedAt: (DateTime.now().millisecondsSinceEpoch ~/ 1000).toString(),
-      ),
-      Message(
-        id: 5,
-        content: 'Wie geht es dir?',
-        correction: 'Wie geht es Ihnen?',
-        conversationId: 1,
-        isUserMessage: false,
-        createdAt: (DateTime.now().millisecondsSinceEpoch ~/ 1000).toString(),
-        updatedAt: (DateTime.now().millisecondsSinceEpoch ~/ 1000).toString(),
-      ),
-    ];
 
     return Scaffold(
       appBar: AppBar(
@@ -276,7 +220,7 @@ class _ConversationPageState extends State<ConversationPage> {
                           GPTMessage(
                             message: message,
                           ),
-                      IsTypingAnimation(),
+                      if (_generatingResponse) const IsTypingAnimation(),
                     ],
                   ),
                 ),
