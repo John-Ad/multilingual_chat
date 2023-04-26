@@ -18,7 +18,7 @@ class UserMessage extends StatefulWidget {
 }
 
 class _UserMessageState extends State<UserMessage> {
-  MessagesService _messagesService = MessagesService();
+  final MessagesService _messagesService = MessagesService();
   late FToast fToast;
   late Message _message;
   bool _loadingTranslation = false;
@@ -93,7 +93,7 @@ class _UserMessageState extends State<UserMessage> {
                       widget.message.content,
                       maxLines: 20,
                       style: theme.textTheme.bodyMedium!.copyWith(
-                        color: theme.colorScheme.onPrimary.withAlpha(178),
+                        color: theme.colorScheme.onPrimary,
                         fontFamily: "OpenSans",
                       ),
                     ),
