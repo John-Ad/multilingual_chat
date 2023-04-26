@@ -29,6 +29,8 @@ class _IsTypingAnimationState extends State<IsTypingAnimation>
     )..forward();
 
     _circleController2.addListener(() async {
+      if (!mounted) return;
+
       if (_circleController2.isCompleted) {
         await Future.delayed(const Duration(milliseconds: 100));
         _circleController2.reverse();
@@ -37,7 +39,10 @@ class _IsTypingAnimationState extends State<IsTypingAnimation>
         _circleController2.forward();
       }
     });
+
     _circleController3.addListener(() async {
+      if (!mounted) return;
+
       if (_circleController3.isCompleted) {
         await Future.delayed(const Duration(milliseconds: 200));
         _circleController3.reverse();
