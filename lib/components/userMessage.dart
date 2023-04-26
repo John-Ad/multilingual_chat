@@ -38,7 +38,7 @@ class _UserMessageState extends State<UserMessage> {
     });
 
     var translation =
-        await GPTService.getEnglishTranslation(widget.message.content);
+        await GPTService.getEnglishTranslation([], widget.message.content);
 
     setState(() {
       _loadingTranslation = false;

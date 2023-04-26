@@ -39,7 +39,7 @@ class _GPTMessageState extends State<GPTMessage> {
     });
 
     var translation =
-        await GPTService.getEnglishTranslation(widget.message.content);
+        await GPTService.getEnglishTranslation([], widget.message.content);
 
     setState(() {
       _loadingTranslation = false;

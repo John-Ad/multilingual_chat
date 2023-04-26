@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:german_tutor/models/gptRequestData.dart';
+import 'package:german_tutor/models/message.dart';
 import 'package:german_tutor/services/SettingsService.dart';
 import 'package:http/http.dart' as http;
 
@@ -26,21 +27,26 @@ class GPTService {
   (prompt)
   """;
 
-  static Future<String> getGermanResponse(String message) async {
-    return _getResponse(_germanResponsePrompt.replaceAll("(prompt)", message));
+  static Future<String> getGermanResponse(
+      List<Message> contextMessages, String message) async {
+    return _getResponse(
+        contextMessages, _germanResponsePrompt.replaceAll("(prompt)", message));
   }
 
-  static Future<String> getEnglishTranslation(String message) async {
-    return _getResponse(
+  static Future<String> getEnglishTranslation(
+      List<Message> contextMessages, String message) async {
+    return _getResponse(contextMessages,
         _englishTranslationPrompt.replaceAll("(prompt)", message));
   }
 
-  static Future<String> getGermanCorrection(String message) async {
-    return _getResponse(
+  static Future<String> getGermanCorrection(
+      List<Message> contextMessages, String message) async {
+    return _getResponse(contextMessages,
         _germanCorrectionPrompt.replaceAll("(prompt)", message));
   }
 
-  static Future<String> _getResponse(String message) async {
+  static Future<String> _getResponse(
+      List<Message> contextMessages, String message) async {
     try {
       final settings = await _settingsService.getSettings();
       if (settings == null) {
@@ -51,6 +57,13 @@ class GPTService {
       if (apiKey.isEmpty) {
         throw Exception('Failed to load api key');
       }
+
+      final List<GPTRequestMessage> contextReqMessages = contextMessages
+          .map((e) => GPTRequestMessage(
+                role: e.isUserMessage ? "user" : "assistant",
+                content: e.content,
+              ))
+          .toList();
 
       GPTRequestMessage reqMessage = GPTRequestMessage(
         role: "user",
@@ -65,7 +78,7 @@ class GPTService {
         },
         body: jsonEncode(GPTRequestData(
           model: _model,
-          messages: [reqMessage],
+          messages: [...contextReqMessages, reqMessage],
           n: 1,
           max_tokens: 100,
         )),
