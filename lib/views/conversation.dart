@@ -171,7 +171,7 @@ class _ConversationPageState extends State<ConversationPage> {
         title: Center(
           child: Text(
             widget.title,
-            style: theme.textTheme.headlineLarge!.copyWith(
+            style: theme.textTheme.headlineMedium!.copyWith(
               color: theme.colorScheme.tertiary,
             ),
           ),
