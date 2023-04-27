@@ -7,7 +7,7 @@ import 'package:sqflite/sqflite.dart';
 ///
 /// It is a singleton class, so only one instance of it can exist.
 class DBContext {
-  static const int version = 2;
+  static const int version = 3;
   static Database? _database;
 
   static Future<Database> get database async {
