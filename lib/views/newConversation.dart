@@ -78,15 +78,15 @@ class _NewConversationState extends State<NewConversation> {
   Widget build(BuildContext context) {
     var theme = Theme.of(context);
 
-    var mainContentHeight =
-        MediaQuery.of(context).size.height - AppBar().preferredSize.height;
+    // var mainContentHeight =
+    //     MediaQuery.of(context).size.height - AppBar().preferredSize.height;
 
     return Scaffold(
       appBar: AppBar(
         title: Center(
           child: Text(
             widget.title,
-            style: theme.textTheme.headlineLarge!.copyWith(
+            style: theme.textTheme.headlineMedium!.copyWith(
               color: theme.colorScheme.tertiary,
             ),
           ),
@@ -116,8 +116,8 @@ class _NewConversationState extends State<NewConversation> {
         ],
       ),
       body: SingleChildScrollView(
-        child: Container(
-          height: mainContentHeight,
+        child: SizedBox(
+          // height: mainContentHeight,
           child: Column(
             children: [
               Center(
@@ -132,7 +132,7 @@ class _NewConversationState extends State<NewConversation> {
                 ),
               ),
               Padding(
-                padding: const EdgeInsets.fromLTRB(40, 40, 40, 0),
+                padding: const EdgeInsets.fromLTRB(40, 40, 40, 40),
                 child: Container(
                   width: MediaQuery.of(context).size.width * 0.8,
                   // height: MediaQuery.of(context).size.height * 0.6,

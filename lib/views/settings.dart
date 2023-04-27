@@ -111,7 +111,7 @@ class _SettingsPageState extends State<SettingsPage> {
         title: Center(
           child: Text(
             widget.title,
-            style: theme.textTheme.headlineLarge!.copyWith(
+            style: theme.textTheme.headlineMedium!.copyWith(
               color: theme.colorScheme.tertiary,
             ),
           ),

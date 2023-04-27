@@ -66,7 +66,7 @@ class _HomeState extends State<Home> with RouteAware {
         title: Center(
           child: Text(
             widget.title,
-            style: theme.textTheme.headlineLarge!.copyWith(
+            style: theme.textTheme.headlineMedium!.copyWith(
               color: theme.colorScheme.tertiary,
             ),
           ),
