@@ -113,4 +113,26 @@ class MessagesService {
       return false;
     }
   }
+
+  /// Delete a message by id.
+  ///
+  /// @param id The id of the message.
+  ///
+  /// @return bool True if successful, false otherwise.
+  Future<bool> deleteById(int id) async {
+    try {
+      if (!dbLoaded) {
+        await init();
+      }
+
+      await db.delete("Message", where: "id = ?", whereArgs: [id]);
+
+      return true;
+    } catch (e) {
+      if (kDebugMode) {
+        debugPrint("MessagesService: $e");
+      }
+      return false;
+    }
+  }
 }
