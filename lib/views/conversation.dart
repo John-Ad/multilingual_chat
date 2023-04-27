@@ -219,10 +219,12 @@ class _ConversationPageState extends State<ConversationPage> {
                         if (message.isUserMessage)
                           UserMessage(
                             message: message,
+                            refreshMessages: _getMessages,
                           )
                         else
                           GPTMessage(
                             message: message,
+                            refreshMessages: _getMessages,
                           ),
                       if (_generatingResponse) const IsTypingAnimation(),
                     ],

@@ -7,10 +7,12 @@ import 'package:german_tutor/services/MessagesService.dart';
 
 class UserMessage extends StatefulWidget {
   final Message message;
+  final Function refreshMessages;
 
   const UserMessage({
     super.key,
     required this.message,
+    required this.refreshMessages,
   });
 
   @override
@@ -22,6 +24,7 @@ class _UserMessageState extends State<UserMessage> {
   late FToast fToast;
   late Message _message;
   bool _loadingTranslation = false;
+  bool _deleting = false;
 
   @override
   void initState() {
@@ -63,6 +66,26 @@ class _UserMessageState extends State<UserMessage> {
     setState(() {
       _message = newMessage;
     });
+  }
+
+  Future<void> _delete() async {
+    setState(() {
+      _deleting = true;
+    });
+
+    var deleted = await _messagesService.deleteById(_message.id);
+
+    setState(() {
+      _deleting = false;
+    });
+
+    if (!deleted) {
+      fToast.showToast(
+          child: const ErrorToast(message: "Failed to delete message."));
+      return;
+    }
+
+    widget.refreshMessages();
   }
 
   @override
@@ -159,6 +182,13 @@ class _UserMessageState extends State<UserMessage> {
                         }
                     },
                     icon: const Icon(Icons.translate),
+                  ),
+                  IconButton(
+                    onPressed: () => {_delete()},
+                    icon: const Icon(
+                      Icons.delete_outline,
+                      color: Colors.red,
+                    ),
                   ),
                 ],
               ),
