@@ -8,10 +8,12 @@ import '../services/MessagesService.dart';
 
 class GPTMessage extends StatefulWidget {
   final Message message;
+  final Function refreshMessages;
 
   const GPTMessage({
     super.key,
     required this.message,
+    required this.refreshMessages,
   });
 
   @override
@@ -23,6 +25,7 @@ class _GPTMessageState extends State<GPTMessage> {
   late FToast fToast;
   late Message _message;
   bool _loadingTranslation = false;
+  bool _deleting = false;
 
   @override
   void initState() {
@@ -64,6 +67,27 @@ class _GPTMessageState extends State<GPTMessage> {
     setState(() {
       _message = newMessage;
     });
+  }
+
+  Future<void> _delete() async {
+    setState(() {
+      _deleting = true;
+    });
+
+    var deleted = await _messagesService.deleteById(_message.id);
+    await Future.delayed(const Duration(milliseconds: 500));
+
+    setState(() {
+      _deleting = false;
+    });
+
+    if (!deleted) {
+      fToast.showToast(
+          child: const ErrorToast(message: "Failed to delete message."));
+      return;
+    }
+
+    widget.refreshMessages();
   }
 
   @override
@@ -193,6 +217,21 @@ class _GPTMessageState extends State<GPTMessage> {
                     },
                     icon: const Icon(Icons.translate),
                   ),
+                  if (!_deleting)
+                    IconButton(
+                      onPressed: () => {_delete()},
+                      icon: const Icon(
+                        Icons.delete_outline,
+                        color: Colors.red,
+                      ),
+                    ),
+                  if (_deleting)
+                    const Padding(
+                      padding: EdgeInsets.all(8.0),
+                      child: Center(
+                        child: CircularProgressIndicator(),
+                      ),
+                    ),
                 ],
               ),
             ),

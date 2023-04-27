@@ -30,7 +30,7 @@ create table
         translation text,
         created_at timestamp not null default current_timestamp,
         updated_at timestamp not null default current_timestamp,
-        foreign key (conversation_id) references Conversation(id)
+        foreign key (conversation_id) references Conversation(id) on delete cascade
     );
 
 insert into Settings(id, api_key) values(1,'');
