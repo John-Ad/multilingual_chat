@@ -75,6 +75,7 @@ class _GPTMessageState extends State<GPTMessage> {
     });
 
     var deleted = await _messagesService.deleteById(_message.id);
+    await Future.delayed(const Duration(milliseconds: 500));
 
     setState(() {
       _deleting = false;
@@ -216,13 +217,21 @@ class _GPTMessageState extends State<GPTMessage> {
                     },
                     icon: const Icon(Icons.translate),
                   ),
-                  IconButton(
-                    onPressed: () => {_delete()},
-                    icon: const Icon(
-                      Icons.delete_outline,
-                      color: Colors.red,
+                  if (!_deleting)
+                    IconButton(
+                      onPressed: () => {_delete()},
+                      icon: const Icon(
+                        Icons.delete_outline,
+                        color: Colors.red,
+                      ),
                     ),
-                  ),
+                  if (_deleting)
+                    const Padding(
+                      padding: EdgeInsets.all(8.0),
+                      child: Center(
+                        child: CircularProgressIndicator(),
+                      ),
+                    ),
                 ],
               ),
             ),

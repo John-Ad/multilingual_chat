@@ -4,8 +4,6 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:german_tutor/components/gptMessage.dart';
 import 'package:german_tutor/components/isTypingAnimation.dart';
 import 'package:german_tutor/components/toasts.dart';
-import 'package:german_tutor/models/conversation.dart';
-import 'package:german_tutor/services/CoversationsService.dart';
 import 'package:german_tutor/services/GPTService.dart';
 import 'package:german_tutor/services/MessagesService.dart';
 import 'package:german_tutor/views/settings.dart';
@@ -43,7 +41,7 @@ class _ConversationPageState extends State<ConversationPage> {
     super.initState();
     fToast = FToast();
     fToast.init(context);
-    _getMessages();
+    _getMessagesWithScroll();
   }
 
   void _scrollToBottomOfMessages() {
@@ -67,8 +65,15 @@ class _ConversationPageState extends State<ConversationPage> {
       loadingMessages = false;
       _messages = result;
     });
+  }
 
+  Future<void> _getMessagesWithScroll() async {
+    await _getMessages();
     _scrollToBottomOfMessages();
+  }
+
+  Future<void> _getMessagesNoScroll() async {
+    await _getMessages();
   }
 
   Future<void> _addMessage() async {
@@ -89,7 +94,7 @@ class _ConversationPageState extends State<ConversationPage> {
       return;
     }
 
-    _getMessages();
+    _getMessagesWithScroll();
   }
 
   Future<bool> _addUserMessage(String message) async {
@@ -105,7 +110,7 @@ class _ConversationPageState extends State<ConversationPage> {
       return false;
     }
 
-    await _getMessages();
+    await _getMessagesWithScroll();
 
     return true;
   }
@@ -219,12 +224,12 @@ class _ConversationPageState extends State<ConversationPage> {
                         if (message.isUserMessage)
                           UserMessage(
                             message: message,
-                            refreshMessages: _getMessages,
+                            refreshMessages: _getMessagesNoScroll,
                           )
                         else
                           GPTMessage(
                             message: message,
-                            refreshMessages: _getMessages,
+                            refreshMessages: _getMessagesNoScroll,
                           ),
                       if (_generatingResponse) const IsTypingAnimation(),
                     ],
