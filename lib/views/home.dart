@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:german_tutor/components/homeConversation.dart';
-import 'package:german_tutor/models/conversation.dart';
-import 'package:german_tutor/services/CoversationsService.dart';
-import 'package:german_tutor/views/settings.dart';
+import 'package:multilingual_chat/components/homeConversation.dart';
+import 'package:multilingual_chat/models/conversation.dart';
+import 'package:multilingual_chat/services/CoversationsService.dart';
+import 'package:multilingual_chat/views/settings.dart';
 
 import '../main.dart';
 import 'newConversation.dart';

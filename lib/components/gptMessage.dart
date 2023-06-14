@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:german_tutor/components/toasts.dart';
-import 'package:german_tutor/models/message.dart';
+import 'package:multilingual_chat/components/toasts.dart';
+import 'package:multilingual_chat/models/message.dart';
 
 import '../services/GPTService.dart';
 import '../services/MessagesService.dart';

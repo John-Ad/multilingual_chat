@@ -1,8 +1,8 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'package:german_tutor/models/gptRequestData.dart';
-import 'package:german_tutor/models/message.dart';
-import 'package:german_tutor/services/SettingsService.dart';
+import 'package:multilingual_chat/models/gptRequestData.dart';
+import 'package:multilingual_chat/models/message.dart';
+import 'package:multilingual_chat/services/SettingsService.dart';
 import 'package:http/http.dart' as http;
 
 class GPTService {
@@ -10,7 +10,7 @@ class GPTService {
 
   static const String _url = "https://api.openai.com/v1/chat/completions";
 
-  static const _model = "gpt-3.5-turbo";
+  static const _model = "gpt-3.5-turbo-0613";
 
   static const String _germanResponsePrompt = """
   shortly respond in german:

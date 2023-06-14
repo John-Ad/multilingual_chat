@@ -1,6 +1,6 @@
 {
-    "name": "german_tutor",
-    "short_name": "german_tutor",
+    "name": "multilingual_chat",
+    "short_name": "multilingual_chat",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",

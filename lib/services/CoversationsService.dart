@@ -1,6 +1,6 @@
 import 'package:flutter/foundation.dart';
-import 'package:german_tutor/models/DBContext.dart';
-import 'package:german_tutor/models/conversation.dart';
+import 'package:multilingual_chat/models/DBContext.dart';
+import 'package:multilingual_chat/models/conversation.dart';
 import 'package:sqflite/sqflite.dart';
 
 class ConversationsService {

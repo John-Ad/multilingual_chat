@@ -1,7 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.german_tutor">
+    package="com.example.multilingual_chat">
    <application
-        android:label="german_tutor"
+        android:label="multilingual_chat"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity

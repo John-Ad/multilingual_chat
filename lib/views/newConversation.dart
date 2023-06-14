@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:german_tutor/components/toasts.dart';
-import 'package:german_tutor/services/TopicGeneratorService.dart';
-import 'package:german_tutor/views/conversation.dart';
-import 'package:german_tutor/views/settings.dart';
+import 'package:multilingual_chat/components/toasts.dart';
+import 'package:multilingual_chat/services/TopicGeneratorService.dart';
+import 'package:multilingual_chat/views/conversation.dart';
+import 'package:multilingual_chat/views/settings.dart';
 
 import '../services/CoversationsService.dart';
 
