@@ -26,7 +26,7 @@ class DBContext {
     debugPrint("Initializing database...");
 
     var databasesPath = await getDatabasesPath();
-    String path = '${databasesPath}german_tutor.db';
+    String path = '${databasesPath}multilingual_chat.db';
 
     return await openDatabase(path,
         version: version, onCreate: _onCreate, onUpgrade: _onUpgrade);

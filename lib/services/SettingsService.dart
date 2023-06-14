@@ -1,6 +1,6 @@
 import 'package:flutter/foundation.dart';
-import 'package:german_tutor/models/DBContext.dart';
-import 'package:german_tutor/models/settings.dart';
+import 'package:multilingual_chat/models/DBContext.dart';
+import 'package:multilingual_chat/models/settings.dart';
 import 'package:sqflite/sqflite.dart';
 
 class SettingsService {

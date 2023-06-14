@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:german_tutor/components/gptMessage.dart';
-import 'package:german_tutor/components/isTypingAnimation.dart';
-import 'package:german_tutor/components/toasts.dart';
-import 'package:german_tutor/services/GPTService.dart';
-import 'package:german_tutor/services/MessagesService.dart';
-import 'package:german_tutor/views/settings.dart';
+import 'package:multilingual_chat/components/gptMessage.dart';
+import 'package:multilingual_chat/components/isTypingAnimation.dart';
+import 'package:multilingual_chat/components/toasts.dart';
+import 'package:multilingual_chat/services/GPTService.dart';
+import 'package:multilingual_chat/services/MessagesService.dart';
+import 'package:multilingual_chat/views/settings.dart';
 
 import '../components/userMessage.dart';
 import '../models/message.dart';

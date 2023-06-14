@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:german_tutor/components/toasts.dart';
-import 'package:german_tutor/models/message.dart';
-import 'package:german_tutor/services/GPTService.dart';
-import 'package:german_tutor/services/MessagesService.dart';
+import 'package:multilingual_chat/components/toasts.dart';
+import 'package:multilingual_chat/models/message.dart';
+import 'package:multilingual_chat/services/GPTService.dart';
+import 'package:multilingual_chat/services/MessagesService.dart';
 
 class UserMessage extends StatefulWidget {
   final Message message;

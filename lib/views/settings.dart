@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:german_tutor/services/SettingsService.dart';
+import 'package:multilingual_chat/services/SettingsService.dart';
 
 import '../components/toasts.dart';
 import '../models/settings.dart';
