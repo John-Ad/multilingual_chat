@@ -124,7 +124,8 @@ class _ConversationPageState extends State<ConversationPage> {
     var lastNMessages =
         _messages.reversed.skip(1).take(20).toList().reversed.toList();
 
-    var response = await GPTService.getGermanResponse(lastNMessages, message);
+    var response = await GPTService.getGermanResponse(
+        widget.topic, lastNMessages, message);
     var correction = await GPTService.getGermanCorrection([], message);
 
     setState(() {
