@@ -12,6 +12,10 @@ class GPTService {
 
   static const _model = "gpt-3.5-turbo-0613";
 
+  static const String _topicSystemPrompt = """
+You are a tutor helping a student learn a new language. The topic is: (topic).
+""";
+
   static const String _germanResponsePrompt = """
   shortly respond in german:
   (prompt)
@@ -28,9 +32,10 @@ class GPTService {
   """;
 
   static Future<String> getGermanResponse(
-      List<Message> contextMessages, String message) async {
+      String topic, List<Message> contextMessages, String message) async {
     return _getResponse(
-        contextMessages, _germanResponsePrompt.replaceAll("(prompt)", message));
+        contextMessages, _germanResponsePrompt.replaceAll("(prompt)", message),
+        topicContextMessage: topic);
   }
 
   static Future<String> getEnglishTranslation(
@@ -46,7 +51,8 @@ class GPTService {
   }
 
   static Future<String> _getResponse(
-      List<Message> contextMessages, String message) async {
+      List<Message> contextMessages, String message,
+      {String topicContextMessage = ""}) async {
     try {
       final settings = await _settingsService.getSettings();
       if (settings == null) {
@@ -71,6 +77,10 @@ class GPTService {
               ))
           .toList();
 
+      GPTRequestMessage topicContext = GPTRequestMessage(
+        role: "system",
+        content: _topicSystemPrompt.replaceAll("(topic)", topicContextMessage),
+      );
       GPTRequestMessage reqMessage = GPTRequestMessage(
         role: "user",
         content: message,
@@ -84,7 +94,11 @@ class GPTService {
         },
         body: jsonEncode(GPTRequestData(
           model: _model,
-          messages: [...contextReqMessages, reqMessage],
+          messages: [
+            if (topicContextMessage.isNotEmpty) topicContext,
+            ...contextReqMessages,
+            reqMessage,
+          ],
           n: 1,
           max_tokens: maxTokens,
         )),
