@@ -6,6 +6,7 @@ class Conversation {
   String name;
   String createdAt;
   String updatedAt;
+  String? languageName;
 
   Conversation({
     required this.id,
@@ -13,6 +14,7 @@ class Conversation {
     required this.name,
     required this.createdAt,
     required this.updatedAt,
+    this.languageName,
   });
 
   static fromMap(Map<String, dynamic> map) {
@@ -25,6 +27,7 @@ class Conversation {
       name: map['name'],
       createdAt: map['created_at'],
       updatedAt: map['updated_at'],
+      languageName: map['language_name'],
     );
   }
 }

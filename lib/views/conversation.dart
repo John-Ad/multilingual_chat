@@ -15,12 +15,14 @@ class ConversationPage extends StatefulWidget {
   final String title;
   final int id;
   final String topic;
+  final String language;
 
   const ConversationPage({
     super.key,
     required this.title,
     required this.id,
     required this.topic,
+    required this.language,
   });
 
   @override
@@ -124,9 +126,17 @@ class _ConversationPageState extends State<ConversationPage> {
     var lastNMessages =
         _messages.reversed.skip(1).take(20).toList().reversed.toList();
 
-    var response = await GPTService.getGermanResponse(
-        widget.topic, lastNMessages, message);
-    var correction = await GPTService.getGermanCorrection([], message);
+    var response = await GPTService.getResponseInChosenLanguage(
+      widget.language,
+      widget.topic,
+      lastNMessages,
+      message,
+    );
+    var correction = await GPTService.getLanguageCorrection(
+      widget.language,
+      [],
+      message,
+    );
 
     setState(() {
       _generatingResponse = false;

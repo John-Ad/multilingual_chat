@@ -29,7 +29,20 @@ class ConversationsService {
         await init();
       }
 
-      var conversations = await db.query('Conversation');
+      var conversations = await db.rawQuery(
+        """
+        SELECT
+          Conversation.id,
+          Conversation.language_id,
+          Conversation.name,
+          Conversation.created_at,
+          Conversation.updated_at,
+          Language.name as language_name
+        FROM Conversation
+        JOIN Language ON Conversation.language_id = Language.id
+        """,
+        [],
+      );
       // debugPrint(conversations.toString());
       List<Conversation> result = [];
 
@@ -58,8 +71,22 @@ class ConversationsService {
         await init();
       }
 
-      var conversation = await db.query('Conversation',
-          where: 'id = ?', whereArgs: [id], limit: 1);
+      var conversation = await db.rawQuery(
+        """
+        SELECT
+          Conversation.id,
+          Conversation.language_id,
+          Conversation.name,
+          Conversation.created_at,
+          Conversation.updated_at,
+          Language.name as language_name
+        FROM Conversation
+        JOIN Language ON Conversation.language_id = Language.id
+        WHERE Conversation.id = ?
+        LIMIT 1
+        """,
+        [id],
+      );
 
       if (conversation.isEmpty) {
         return null;
@@ -75,6 +102,8 @@ class ConversationsService {
   }
 
   /// Add a conversation.
+  ///
+  /// @param languageId The id of the language.
   ///
   /// @param name The name of the conversation.
   ///

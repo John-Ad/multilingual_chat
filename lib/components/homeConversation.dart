@@ -34,11 +34,13 @@ class HomeConversation extends StatelessWidget {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (context) => ConversationPage(
-                              title: "Multilingual Chat",
-                              id: conversation.id,
-                              topic: conversation.name,
-                            )),
+                      builder: (context) => ConversationPage(
+                        title: "Multilingual Chat",
+                        id: conversation.id,
+                        language: conversation.languageName ?? '',
+                        topic: conversation.name,
+                      ),
+                    ),
                   )
                 },
                 child: Padding(
