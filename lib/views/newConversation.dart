@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:multilingual_chat/components/chooseLanguageDialogue.dart';
 import 'package:multilingual_chat/components/toasts.dart';
+import 'package:multilingual_chat/models/language.dart';
 import 'package:multilingual_chat/services/TopicGeneratorService.dart';
 import 'package:multilingual_chat/views/conversation.dart';
 import 'package:multilingual_chat/views/settings.dart';
@@ -7,6 +9,8 @@ import 'package:multilingual_chat/views/settings.dart';
 import '../services/CoversationsService.dart';
 
 import 'package:fluttertoast/fluttertoast.dart';
+
+import '../services/LanguagesService.dart';
 
 class NewConversation extends StatefulWidget {
   const NewConversation({super.key, required this.title});
@@ -19,9 +23,12 @@ class NewConversation extends StatefulWidget {
 
 class _NewConversationState extends State<NewConversation> {
   final ConversationsService _conversationsService = ConversationsService();
-  final TextEditingController _topicController = TextEditingController();
   late FToast fToast;
   late List<String> _topics;
+  late List<Language> _languages;
+
+  final TextEditingController _topicController = TextEditingController();
+  Language _selectedLanguage = Language(id: 0, name: "");
 
   _NewConversationState() {
     _topics = _getRandomTopics();
@@ -52,6 +59,13 @@ class _NewConversationState extends State<NewConversation> {
   }
 
   void _addConversation() async {
+    if (_selectedLanguage.name.isEmpty) {
+      fToast.showToast(
+        child: const ErrorToast(message: "Please select a language"),
+      );
+      return;
+    }
+
     if (_topicController.text.isEmpty) {
       fToast.showToast(
         child: const ErrorToast(message: "Please enter or choose a topic"),
@@ -77,9 +91,6 @@ class _NewConversationState extends State<NewConversation> {
   @override
   Widget build(BuildContext context) {
     var theme = Theme.of(context);
-
-    // var mainContentHeight =
-    //     MediaQuery.of(context).size.height - AppBar().preferredSize.height;
 
     return Scaffold(
       appBar: AppBar(
@@ -117,7 +128,6 @@ class _NewConversationState extends State<NewConversation> {
       ),
       body: SingleChildScrollView(
         child: SizedBox(
-          // height: mainContentHeight,
           child: Column(
             children: [
               Center(
@@ -135,7 +145,6 @@ class _NewConversationState extends State<NewConversation> {
                 padding: const EdgeInsets.fromLTRB(40, 40, 40, 40),
                 child: Container(
                   width: MediaQuery.of(context).size.width * 0.8,
-                  // height: MediaQuery.of(context).size.height * 0.6,
                   decoration: BoxDecoration(
                     color: theme.colorScheme.surface,
                     borderRadius: BorderRadius.circular(10),
@@ -143,6 +152,72 @@ class _NewConversationState extends State<NewConversation> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(0, 20, 0, 0),
+                        child: Text(
+                          "Language: ",
+                          style: theme.textTheme.bodyLarge!.copyWith(
+                            color: theme.colorScheme.onPrimary,
+                          ),
+                        ),
+                      ),
+                      if (_selectedLanguage.id == 0)
+                        ElevatedButton(
+                          onPressed: () => {
+                            showDialog(
+                              context: context,
+                              builder: (context) => ChooseLanguageDialogue(
+                                onLanguageSelected: (language) => setState(
+                                    () => _selectedLanguage = language),
+                              ),
+                            )
+                          },
+                          style: ElevatedButton.styleFrom(
+                            // light grey bg color
+                            backgroundColor:
+                                theme.colorScheme.tertiary.withOpacity(0.5),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10.0),
+                            ),
+                            padding: const EdgeInsets.fromLTRB(10, 10, 10, 10),
+                          ),
+                          child: Text(
+                            "Choose a language",
+                            style: theme.textTheme.bodyLarge!.copyWith(
+                              color: theme.colorScheme.onPrimary,
+                            ),
+                          ),
+                        ),
+                      if (_selectedLanguage.id != 0)
+                        Container(
+                          width: MediaQuery.of(context).size.width * 0.5,
+                          decoration: BoxDecoration(
+                            color: theme.colorScheme.tertiary.withOpacity(0.5),
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          padding: const EdgeInsets.all(10),
+                          margin: const EdgeInsets.fromLTRB(0, 10, 0, 0),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                _selectedLanguage.name,
+                                style: theme.textTheme.bodyLarge!.copyWith(
+                                  color: theme.colorScheme.onPrimary,
+                                ),
+                              ),
+                              IconButton(
+                                onPressed: () => setState(() {
+                                  _selectedLanguage = Language(id: 0, name: "");
+                                }),
+                                icon: const Icon(
+                                  Icons.close,
+                                  color: Color.fromARGB(255, 255, 0, 0),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
                       Padding(
                         padding: const EdgeInsets.fromLTRB(0, 20, 0, 0),
                         child: Text(

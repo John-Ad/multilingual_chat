@@ -78,7 +78,7 @@ class ConversationsService {
   ///
   /// @param name The name of the conversation.
   ///
-  /// @return bool True if the conversation was added, false otherwise.
+  /// @return int: Id of record if successful, 0 otherwise.
   Future<int> add(String name) async {
     try {
       if (!dbLoaded) {

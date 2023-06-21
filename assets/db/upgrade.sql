@@ -10,14 +10,16 @@ create table
 
 create table
     `Language`(
-        id int primary key autoincrement,
+        id integer primary key autoincrement,
         name text not null
     );
+
+drop table Conversation;
 
 create table
     Conversation(
         id integer primary key autoincrement,
-        language_id int not null,
+        language_id integer not null,
         name text not null,
         created_at timestamp not null default current_timestamp,
         updated_at timestamp not null default current_timestamp,
@@ -41,38 +43,36 @@ create table
 
 insert into Settings(id, api_key) values(1,'');
 
-/*Insert 2 popular languages into Language table from each continent that uses latin characters*/
+insert into Language(name) values('Afrikaans');
 
-insert into Language(id, name) values('Afrikaans');
+insert into Language(name) values('Arabic');
 
-insert into Language(id, name) values('Arabic');
+insert into Language(name) values('Bengali');
 
-insert into Language(id, name) values('Bengali');
+insert into Language(name) values('Bulgarian');
 
-insert into Language(id, name) values('Bulgarian');
+insert into Language(name) values('Catalan');
 
-insert into Language(id, name) values('Catalan');
+insert into Language(name) values('English');
 
-insert into Language(id, name) values('English');
+insert into Language(name) values('French');
 
-insert into Language(id, name) values('French');
+insert into Language(name) values('German');
 
-insert into Language(id, name) values('German');
+insert into Language(name) values('Hindi');
 
-insert into Language(id, name) values('Hindi');
+insert into Language(name) values('Indonesian');
 
-insert into Language(id, name) values('Indonesian');
+insert into Language(name) values('Italian');
 
-insert into Language(id, name) values('Italian');
+insert into Language(name) values('Japanese');
 
-insert into Language(id, name) values('Japanese');
+insert into Language(name) values('Korean');
 
-insert into Language(id, name) values('Korean');
+insert into Language(name) values('Malay');
 
-insert into Language(id, name) values('Malay');
+insert into Language(name) values('Portuguese');
 
-insert into Language(id, name) values('Portuguese');
+insert into Language(name) values('Russian');
 
-insert into Language(id, name) values('Russian');
-
-insert into Language(id, name) values('Spanish');
+insert into Language(name) values('Spanish');
