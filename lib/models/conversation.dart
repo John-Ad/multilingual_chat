@@ -2,12 +2,14 @@ import 'package:flutter/foundation.dart';
 
 class Conversation {
   int id;
+  int languageId;
   String name;
   String createdAt;
   String updatedAt;
 
   Conversation({
     required this.id,
+    required this.languageId,
     required this.name,
     required this.createdAt,
     required this.updatedAt,
@@ -19,6 +21,7 @@ class Conversation {
 
     return Conversation(
       id: map['id'],
+      languageId: map['language_id'],
       name: map['name'],
       createdAt: map['created_at'],
       updatedAt: map['updated_at'],
