@@ -79,13 +79,16 @@ class ConversationsService {
   /// @param name The name of the conversation.
   ///
   /// @return int: Id of record if successful, 0 otherwise.
-  Future<int> add(String name) async {
+  Future<int> add(int languageId, String name) async {
     try {
       if (!dbLoaded) {
         await init();
       }
 
-      return await db.insert('Conversation', {'name': name});
+      return await db.insert('Conversation', {
+        'language_id': languageId,
+        'name': name,
+      });
     } catch (e) {
       if (kDebugMode) {
         debugPrint("Add Convo: $e");

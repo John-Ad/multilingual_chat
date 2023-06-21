@@ -73,7 +73,10 @@ class _NewConversationState extends State<NewConversation> {
       return;
     }
 
-    int id = await _conversationsService.add(_topicController.text);
+    int id = await _conversationsService.add(
+      _selectedLanguage.id,
+      _topicController.text,
+    );
 
     if (id > 0) {
       debugPrint('Conversation added');
