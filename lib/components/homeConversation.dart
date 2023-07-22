@@ -14,6 +14,22 @@ class HomeConversation extends StatelessWidget {
     required this.deleteConversation,
   });
 
+  void _goToConversation(BuildContext context) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => ConversationPage(
+          cameFromHomeView: true,
+          title: "Multilingual Chat",
+          id: conversation.id,
+          language: conversation.languageName ?? '',
+          languageId: conversation.languageId,
+          topic: conversation.name,
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     var theme = Theme.of(context);
@@ -36,23 +52,14 @@ class HomeConversation extends StatelessWidget {
                 Expanded(
                   child: GestureDetector(
                     onTap: () => {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => ConversationPage(
-                            cameFromHomeView: true,
-                            title: "Multilingual Chat",
-                            id: conversation.id,
-                            language: conversation.languageName ?? '',
-                            languageId: conversation.languageId,
-                            topic: conversation.name,
-                          ),
-                        ),
-                      )
+                      _goToConversation(context),
                     },
                     child: Padding(
                       padding: const EdgeInsets.fromLTRB(40, 0, 0, 0),
-                      child: ScrollingText(text: conversation.name),
+                      child: ScrollingText(
+                        text: conversation.name,
+                        onTapCallback: _goToConversation,
+                      ),
                     ),
                   ),
                 ),

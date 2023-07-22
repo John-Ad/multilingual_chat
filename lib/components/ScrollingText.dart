@@ -6,9 +6,13 @@ import 'package:flutter/scheduler.dart';
 class ScrollingText extends StatefulWidget {
   final String text;
 
+  // add callback function that takes in a context
+  final void Function(BuildContext) onTapCallback;
+
   const ScrollingText({
     super.key,
     required this.text,
+    required this.onTapCallback,
   });
 
   @override
@@ -112,6 +116,9 @@ class _ScrollingTextState extends State<ScrollingText> {
       },
       onHorizontalDragCancel: () => {
         _paused = false,
+      },
+      onTap: () => {
+        widget.onTapCallback(context),
       },
       onTapDown: (details) => {
         _paused = true,
