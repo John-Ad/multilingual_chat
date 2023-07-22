@@ -13,6 +13,8 @@ import '../components/userMessage.dart';
 import '../models/message.dart';
 
 class ConversationPage extends StatefulWidget {
+  final bool cameFromHomeView;
+
   final String title;
   final int id;
   final String topic;
@@ -21,6 +23,7 @@ class ConversationPage extends StatefulWidget {
 
   const ConversationPage({
     super.key,
+    required this.cameFromHomeView,
     required this.title,
     required this.id,
     required this.topic,
@@ -192,7 +195,14 @@ class _ConversationPageState extends State<ConversationPage> {
         ),
         backgroundColor: theme.primaryColor,
         leading: IconButton(
-          onPressed: () => {Navigator.pop(context)},
+          onPressed: () => {
+            Navigator.pop(context),
+            // pop twice to pop back from new conversation page
+            if (widget.cameFromHomeView == false)
+              {
+                Navigator.pop(context),
+              }
+          },
           icon: Icon(
             Icons.arrow_back,
             color: theme.colorScheme.onPrimary,
