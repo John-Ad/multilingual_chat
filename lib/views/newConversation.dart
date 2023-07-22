@@ -53,6 +53,7 @@ class _NewConversationState extends State<NewConversation> {
           builder: (context) => ConversationPage(
                 title: widget.title,
                 id: id,
+                languageId: _selectedLanguage.id,
                 language: _selectedLanguage.name,
                 topic: topic,
               )),

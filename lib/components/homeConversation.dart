@@ -42,6 +42,7 @@ class HomeConversation extends StatelessWidget {
                             title: "Multilingual Chat",
                             id: conversation.id,
                             language: conversation.languageName ?? '',
+                            languageId: conversation.languageId,
                             topic: conversation.name,
                           ),
                         ),
