@@ -39,6 +39,7 @@ class HomeConversation extends StatelessWidget {
                         context,
                         MaterialPageRoute(
                           builder: (context) => ConversationPage(
+                            cameFromHomeView: true,
                             title: "Multilingual Chat",
                             id: conversation.id,
                             language: conversation.languageName ?? '',

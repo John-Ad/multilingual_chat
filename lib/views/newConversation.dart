@@ -10,7 +10,6 @@ import '../services/CoversationsService.dart';
 
 import 'package:fluttertoast/fluttertoast.dart';
 
-import '../services/LanguagesService.dart';
 import '../utils/colorGenerators.dart';
 
 class NewConversation extends StatefulWidget {
@@ -52,6 +51,7 @@ class _NewConversationState extends State<NewConversation> {
       context,
       MaterialPageRoute(
           builder: (context) => ConversationPage(
+                cameFromHomeView: false,
                 title: widget.title,
                 id: id,
                 languageId: _selectedLanguage.id,
