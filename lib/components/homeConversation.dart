@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:multilingual_chat/components/ScrollingText.dart';
 import 'package:multilingual_chat/utils/colorGenerators.dart';
 import '../models/conversation.dart';
 import '../views/conversation.dart';
@@ -51,15 +52,7 @@ class HomeConversation extends StatelessWidget {
                     },
                     child: Padding(
                       padding: const EdgeInsets.fromLTRB(40, 0, 0, 0),
-                      child: SingleChildScrollView(
-                        scrollDirection: Axis.horizontal,
-                        child: Text(
-                          conversation.name,
-                          style: theme.textTheme.bodyLarge!.copyWith(
-                            color: theme.colorScheme.onPrimary,
-                          ),
-                        ),
-                      ),
+                      child: ScrollingText(text: conversation.name),
                     ),
                   ),
                 ),
