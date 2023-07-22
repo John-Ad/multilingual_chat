@@ -8,14 +8,22 @@ create table
         context_messages_count int DEFAULT 3
     );
 
+create table
+    `Language`(
+        id integer primary key autoincrement,
+        name text not null
+    );
+
 drop table Conversation;
 
 create table
     Conversation(
         id integer primary key autoincrement,
+        language_id integer not null,
         name text not null,
         created_at timestamp not null default current_timestamp,
-        updated_at timestamp not null default current_timestamp
+        updated_at timestamp not null default current_timestamp,
+        foreign key (language_id) references `Language`(id) on delete cascade
     );
 
 drop table Message;
@@ -34,3 +42,37 @@ create table
     );
 
 insert into Settings(id, api_key) values(1,'');
+
+insert into Language(name) values('Afrikaans');
+
+insert into Language(name) values('Arabic');
+
+insert into Language(name) values('Bengali');
+
+insert into Language(name) values('Bulgarian');
+
+insert into Language(name) values('Catalan');
+
+insert into Language(name) values('English');
+
+insert into Language(name) values('French');
+
+insert into Language(name) values('German');
+
+insert into Language(name) values('Hindi');
+
+insert into Language(name) values('Indonesian');
+
+insert into Language(name) values('Italian');
+
+insert into Language(name) values('Japanese');
+
+insert into Language(name) values('Korean');
+
+insert into Language(name) values('Malay');
+
+insert into Language(name) values('Portuguese');
+
+insert into Language(name) values('Russian');
+
+insert into Language(name) values('Spanish');

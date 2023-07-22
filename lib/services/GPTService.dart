@@ -13,11 +13,11 @@ class GPTService {
   static const _model = "gpt-3.5-turbo-0613";
 
   static const String _topicSystemPrompt = """
-You are a tutor helping a student learn a new language. The topic is: (topic).
+You are a tutor helping a student learn (language). The topic is: (topic).
 """;
 
-  static const String _germanResponsePrompt = """
-  shortly respond in german:
+  static const String _languageResponsePrompt = """
+  shortly respond in (language):
   (prompt)
   """;
 
@@ -26,33 +26,56 @@ You are a tutor helping a student learn a new language. The topic is: (topic).
   (prompt)
   """;
 
-  static const String _germanCorrectionPrompt = """
-  shortly correct the following german without an explanation:
+  static const String _languageCorrectionPrompt = """
+  shortly correct the following (language) without an explanation:
   (prompt)
   """;
 
-  static Future<String> getGermanResponse(
-      String topic, List<Message> contextMessages, String message) async {
+  static Future<String> getResponseInChosenLanguage(
+    String language,
+    String topic,
+    List<Message> contextMessages,
+    String message,
+  ) async {
     return _getResponse(
-        contextMessages, _germanResponsePrompt.replaceAll("(prompt)", message),
-        topicContextMessage: topic);
+      contextMessages,
+      _languageResponsePrompt
+          .replaceAll("(language)", language)
+          .replaceAll("(prompt)", message),
+      topicContextMessage: topic,
+      language: language,
+    );
   }
 
   static Future<String> getEnglishTranslation(
-      List<Message> contextMessages, String message) async {
-    return _getResponse(contextMessages,
-        _englishTranslationPrompt.replaceAll("(prompt)", message));
+    List<Message> contextMessages,
+    String message,
+  ) async {
+    return _getResponse(
+      contextMessages,
+      _englishTranslationPrompt.replaceAll("(prompt)", message),
+    );
   }
 
-  static Future<String> getGermanCorrection(
-      List<Message> contextMessages, String message) async {
-    return _getResponse(contextMessages,
-        _germanCorrectionPrompt.replaceAll("(prompt)", message));
+  static Future<String> getLanguageCorrection(
+    String language,
+    List<Message> contextMessages,
+    String message,
+  ) async {
+    return _getResponse(
+      contextMessages,
+      _languageCorrectionPrompt
+          .replaceAll("(language)", language)
+          .replaceAll("(prompt)", message),
+    );
   }
 
   static Future<String> _getResponse(
-      List<Message> contextMessages, String message,
-      {String topicContextMessage = ""}) async {
+    List<Message> contextMessages,
+    String message, {
+    String topicContextMessage = "",
+    String language = "",
+  }) async {
     try {
       final settings = await _settingsService.getSettings();
       if (settings == null) {
@@ -79,7 +102,9 @@ You are a tutor helping a student learn a new language. The topic is: (topic).
 
       GPTRequestMessage topicContext = GPTRequestMessage(
         role: "system",
-        content: _topicSystemPrompt.replaceAll("(topic)", topicContextMessage),
+        content: _topicSystemPrompt
+            .replaceAll("(language)", language)
+            .replaceAll("(topic)", topicContextMessage),
       );
       GPTRequestMessage reqMessage = GPTRequestMessage(
         role: "user",

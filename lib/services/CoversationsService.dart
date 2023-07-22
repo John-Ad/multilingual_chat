@@ -29,7 +29,20 @@ class ConversationsService {
         await init();
       }
 
-      var conversations = await db.query('Conversation');
+      var conversations = await db.rawQuery(
+        """
+        SELECT
+          Conversation.id,
+          Conversation.language_id,
+          Conversation.name,
+          Conversation.created_at,
+          Conversation.updated_at,
+          Language.name as language_name
+        FROM Conversation
+        JOIN Language ON Conversation.language_id = Language.id
+        """,
+        [],
+      );
       // debugPrint(conversations.toString());
       List<Conversation> result = [];
 
@@ -58,8 +71,22 @@ class ConversationsService {
         await init();
       }
 
-      var conversation = await db.query('Conversation',
-          where: 'id = ?', whereArgs: [id], limit: 1);
+      var conversation = await db.rawQuery(
+        """
+        SELECT
+          Conversation.id,
+          Conversation.language_id,
+          Conversation.name,
+          Conversation.created_at,
+          Conversation.updated_at,
+          Language.name as language_name
+        FROM Conversation
+        JOIN Language ON Conversation.language_id = Language.id
+        WHERE Conversation.id = ?
+        LIMIT 1
+        """,
+        [id],
+      );
 
       if (conversation.isEmpty) {
         return null;
@@ -76,16 +103,21 @@ class ConversationsService {
 
   /// Add a conversation.
   ///
+  /// @param languageId The id of the language.
+  ///
   /// @param name The name of the conversation.
   ///
-  /// @return bool True if the conversation was added, false otherwise.
-  Future<int> add(String name) async {
+  /// @return int: Id of record if successful, 0 otherwise.
+  Future<int> add(int languageId, String name) async {
     try {
       if (!dbLoaded) {
         await init();
       }
 
-      return await db.insert('Conversation', {'name': name});
+      return await db.insert('Conversation', {
+        'language_id': languageId,
+        'name': name,
+      });
     } catch (e) {
       if (kDebugMode) {
         debugPrint("Add Convo: $e");

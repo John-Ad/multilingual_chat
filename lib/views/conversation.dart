@@ -6,6 +6,7 @@ import 'package:multilingual_chat/components/isTypingAnimation.dart';
 import 'package:multilingual_chat/components/toasts.dart';
 import 'package:multilingual_chat/services/GPTService.dart';
 import 'package:multilingual_chat/services/MessagesService.dart';
+import 'package:multilingual_chat/utils/colorGenerators.dart';
 import 'package:multilingual_chat/views/settings.dart';
 
 import '../components/userMessage.dart';
@@ -15,12 +16,16 @@ class ConversationPage extends StatefulWidget {
   final String title;
   final int id;
   final String topic;
+  final int languageId;
+  final String language;
 
   const ConversationPage({
     super.key,
     required this.title,
     required this.id,
     required this.topic,
+    required this.languageId,
+    required this.language,
   });
 
   @override
@@ -124,9 +129,17 @@ class _ConversationPageState extends State<ConversationPage> {
     var lastNMessages =
         _messages.reversed.skip(1).take(20).toList().reversed.toList();
 
-    var response = await GPTService.getGermanResponse(
-        widget.topic, lastNMessages, message);
-    var correction = await GPTService.getGermanCorrection([], message);
+    var response = await GPTService.getResponseInChosenLanguage(
+      widget.language,
+      widget.topic,
+      lastNMessages,
+      message,
+    );
+    var correction = await GPTService.getLanguageCorrection(
+      widget.language,
+      [],
+      message,
+    );
 
     setState(() {
       _generatingResponse = false;
@@ -206,12 +219,47 @@ class _ConversationPageState extends State<ConversationPage> {
           Column(
             children: [
               Padding(
-                padding: const EdgeInsets.fromLTRB(20, 40, 20, 20),
-                child: Text(
-                  widget.topic,
-                  style: theme.textTheme.headlineSmall!.copyWith(
-                    color: theme.colorScheme.onPrimary,
-                  ),
+                padding: const EdgeInsets.fromLTRB(20, 15, 20, 15),
+                child: Column(
+                  children: [
+                    Row(
+                      children: [
+                        Container(
+                          decoration: BoxDecoration(
+                            color:
+                                getLanguageBannerColorDark(widget.languageId),
+                            borderRadius: BorderRadius.circular(10),
+                            border: Border.all(
+                              color:
+                                  getLanguageBorderColorDark(widget.languageId),
+                              width: 1,
+                            ),
+                          ),
+                          child: Padding(
+                            padding: const EdgeInsets.fromLTRB(12, 5, 12, 5),
+                            child: Text(
+                              textAlign: TextAlign.start,
+                              widget.language,
+                              style: theme.textTheme.headlineLarge!.copyWith(
+                                color: Colors.white,
+                                fontSize: 13,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(0, 10, 0, 0),
+                      child: Text(
+                        widget.topic,
+                        style: theme.textTheme.headlineSmall!.copyWith(
+                          color: theme.colorScheme.onPrimary,
+                          fontSize: 18,
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
               ),
               Expanded(
