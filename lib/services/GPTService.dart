@@ -13,11 +13,11 @@ class GPTService {
   static const _model = "gpt-3.5-turbo-0613";
 
   static const String _topicSystemPrompt = """
-You are a tutor helping a student learn (language). The topic is: (topic).
-""";
+  You are a tutor helping a student learn (language). The topic is: (topic).
+  """;
 
   static const String _languageResponsePrompt = """
-  shortly respond in (language):
+  Shortly respond to this message in (language):
   (prompt)
   """;
 
@@ -27,7 +27,9 @@ You are a tutor helping a student learn (language). The topic is: (topic).
   """;
 
   static const String _languageCorrectionPrompt = """
-  shortly correct the following (language) without an explanation:
+  shortly correct the following (language). If it is not in (language), 
+  translate it into the correct saying in (language). Do this without 
+  an explanation:
   (prompt)
   """;
 
