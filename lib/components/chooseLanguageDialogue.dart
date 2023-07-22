@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../models/language.dart';
 import '../services/LanguagesService.dart';
+import '../utils/colorGenerators.dart';
 
 class ChooseLanguageDialogue extends StatefulWidget {
   final Function(Language language) onLanguageSelected;
@@ -24,9 +25,20 @@ class _ChooseLanguageDialogueState extends State<ChooseLanguageDialogue> {
 
   @override
   Widget build(BuildContext context) {
+    var theme = Theme.of(context);
+
     return SimpleDialog(
-      title: const Text("Choose Language"),
-      contentPadding: const EdgeInsets.all(20),
+      title: Padding(
+        padding: const EdgeInsets.fromLTRB(5, 5, 5, 20),
+        child: Text(
+          "Choose Language",
+          style: theme.textTheme.headlineSmall!.copyWith(
+            color: Colors.white,
+            fontSize: 24,
+          ),
+        ),
+      ),
+      contentPadding: const EdgeInsets.fromLTRB(20, 0, 20, 20),
       children: [
         FutureBuilder(
           future: _getLanguages(),
@@ -35,12 +47,29 @@ class _ChooseLanguageDialogueState extends State<ChooseLanguageDialogue> {
               return Column(
                 children: [
                   for (var language in _languages)
-                    ListTile(
-                      title: Text(language.name),
-                      onTap: () {
-                        widget.onLanguageSelected(language);
-                        Navigator.pop(context);
-                      },
+                    Container(
+                      margin: const EdgeInsets.fromLTRB(0, 5, 0, 5),
+                      decoration: BoxDecoration(
+                        color: getLanguageBannerColorDark(language.id),
+                        borderRadius: BorderRadius.circular(10),
+                        border: Border.all(
+                          color: getLanguageBorderColorDark(language.id),
+                          width: 1,
+                        ),
+                      ),
+                      child: ListTile(
+                        title: Text(
+                          language.name,
+                          style: theme.textTheme.headlineSmall!.copyWith(
+                            color: Colors.white,
+                            fontSize: 18,
+                          ),
+                        ),
+                        onTap: () {
+                          widget.onLanguageSelected(language);
+                          Navigator.pop(context);
+                        },
+                      ),
                     ),
                 ],
               );
