@@ -11,6 +11,7 @@ import '../services/CoversationsService.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
 import '../services/LanguagesService.dart';
+import '../utils/colorGenerators.dart';
 
 class NewConversation extends StatefulWidget {
   const NewConversation({super.key, required this.title});
@@ -163,52 +164,65 @@ class _NewConversationState extends State<NewConversation> {
                           "Language: ",
                           style: theme.textTheme.bodyLarge!.copyWith(
                             color: theme.colorScheme.onPrimary,
+                            fontSize: 20,
                           ),
                         ),
                       ),
                       if (_selectedLanguage.id == 0)
-                        ElevatedButton(
-                          onPressed: () => {
-                            showDialog(
-                              context: context,
-                              builder: (context) => ChooseLanguageDialogue(
-                                onLanguageSelected: (language) => setState(
-                                    () => _selectedLanguage = language),
+                        Padding(
+                          padding: const EdgeInsets.fromLTRB(0, 10, 0, 0),
+                          child: ElevatedButton(
+                            onPressed: () => {
+                              showDialog(
+                                context: context,
+                                builder: (context) => ChooseLanguageDialogue(
+                                  onLanguageSelected: (language) => setState(
+                                      () => _selectedLanguage = language),
+                                ),
+                              )
+                            },
+                            style: ElevatedButton.styleFrom(
+                              // light grey bg color
+                              backgroundColor: theme.colorScheme.tertiary,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10.0),
                               ),
-                            )
-                          },
-                          style: ElevatedButton.styleFrom(
-                            // light grey bg color
-                            backgroundColor:
-                                theme.colorScheme.tertiary.withOpacity(0.5),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(10.0),
+                              padding:
+                                  const EdgeInsets.fromLTRB(10, 10, 10, 10),
                             ),
-                            padding: const EdgeInsets.fromLTRB(10, 10, 10, 10),
-                          ),
-                          child: Text(
-                            "Choose a language",
-                            style: theme.textTheme.bodyLarge!.copyWith(
-                              color: theme.colorScheme.onPrimary,
+                            child: Text(
+                              "Choose a language",
+                              style: theme.textTheme.bodyLarge!.copyWith(
+                                color: theme.colorScheme.onPrimary,
+                                fontSize: 16,
+                              ),
                             ),
                           ),
                         ),
                       if (_selectedLanguage.id != 0)
                         Container(
+                          margin: const EdgeInsets.fromLTRB(0, 10, 0, 0),
                           width: MediaQuery.of(context).size.width * 0.5,
                           decoration: BoxDecoration(
-                            color: theme.colorScheme.tertiary.withOpacity(0.5),
+                            color: getLanguageBannerColorDark(
+                                _selectedLanguage.id),
                             borderRadius: BorderRadius.circular(10),
+                            border: Border.all(
+                              color: getLanguageBorderColorDark(
+                                  _selectedLanguage.id),
+                              width: 1,
+                            ),
                           ),
-                          padding: const EdgeInsets.all(10),
-                          margin: const EdgeInsets.fromLTRB(0, 10, 0, 0),
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              Text(
-                                _selectedLanguage.name,
-                                style: theme.textTheme.bodyLarge!.copyWith(
-                                  color: theme.colorScheme.onPrimary,
+                              Padding(
+                                padding: const EdgeInsets.fromLTRB(10, 0, 0, 0),
+                                child: Text(
+                                  _selectedLanguage.name,
+                                  style: theme.textTheme.bodyLarge!.copyWith(
+                                    color: theme.colorScheme.onPrimary,
+                                  ),
                                 ),
                               ),
                               IconButton(
@@ -229,6 +243,7 @@ class _NewConversationState extends State<NewConversation> {
                           "Choose a topic",
                           style: theme.textTheme.bodyLarge!.copyWith(
                             color: theme.colorScheme.onPrimary,
+                            fontSize: 20,
                           ),
                         ),
                       ),

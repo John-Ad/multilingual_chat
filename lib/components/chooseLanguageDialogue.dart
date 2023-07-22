@@ -30,12 +30,24 @@ class _ChooseLanguageDialogueState extends State<ChooseLanguageDialogue> {
     return SimpleDialog(
       title: Padding(
         padding: const EdgeInsets.fromLTRB(5, 5, 5, 20),
-        child: Text(
-          "Choose Language",
-          style: theme.textTheme.headlineSmall!.copyWith(
-            color: Colors.white,
-            fontSize: 24,
-          ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(
+              "Choose Language",
+              style: theme.textTheme.headlineSmall!.copyWith(
+                color: Colors.white,
+                fontSize: 24,
+              ),
+            ),
+            IconButton(
+              onPressed: () => Navigator.pop(context),
+              icon: const Icon(
+                Icons.close,
+                color: Color.fromARGB(255, 255, 0, 0),
+              ),
+            ),
+          ],
         ),
       ),
       contentPadding: const EdgeInsets.fromLTRB(20, 0, 20, 20),
@@ -44,34 +56,37 @@ class _ChooseLanguageDialogueState extends State<ChooseLanguageDialogue> {
           future: _getLanguages(),
           builder: (BuildContext context, AsyncSnapshot<void> snapshot) {
             if (snapshot.connectionState == ConnectionState.done) {
-              return Column(
-                children: [
-                  for (var language in _languages)
-                    Container(
-                      margin: const EdgeInsets.fromLTRB(0, 5, 0, 5),
-                      decoration: BoxDecoration(
-                        color: getLanguageBannerColorDark(language.id),
-                        borderRadius: BorderRadius.circular(10),
-                        border: Border.all(
-                          color: getLanguageBorderColorDark(language.id),
-                          width: 1,
-                        ),
-                      ),
-                      child: ListTile(
-                        title: Text(
-                          language.name,
-                          style: theme.textTheme.headlineSmall!.copyWith(
-                            color: Colors.white,
-                            fontSize: 18,
+              return SizedBox(
+                width: MediaQuery.of(context).size.width,
+                child: Column(
+                  children: [
+                    for (var language in _languages)
+                      Container(
+                        margin: const EdgeInsets.fromLTRB(0, 5, 0, 5),
+                        decoration: BoxDecoration(
+                          color: getLanguageBannerColorDark(language.id),
+                          borderRadius: BorderRadius.circular(10),
+                          border: Border.all(
+                            color: getLanguageBorderColorDark(language.id),
+                            width: 1,
                           ),
                         ),
-                        onTap: () {
-                          widget.onLanguageSelected(language);
-                          Navigator.pop(context);
-                        },
+                        child: ListTile(
+                          title: Text(
+                            language.name,
+                            style: theme.textTheme.headlineSmall!.copyWith(
+                              color: Colors.white,
+                              fontSize: 18,
+                            ),
+                          ),
+                          onTap: () {
+                            widget.onLanguageSelected(language);
+                            Navigator.pop(context);
+                          },
+                        ),
                       ),
-                    ),
-                ],
+                  ],
+                ),
               );
             } else {
               return const CircularProgressIndicator();
