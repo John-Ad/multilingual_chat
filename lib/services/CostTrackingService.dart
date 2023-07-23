@@ -30,6 +30,11 @@ class CostTrackingService {
     dbLoaded = true;
   }
 
+  /// get all cost data from the last hour, day, week, or month
+  ///
+  /// @param timeRange The time range to query
+  ///
+  /// @return a list of CostTracking objects
   Future<List<CostTracking>> getAll(CostQueryTimeRange timeRange) async {
     try {
       if (!dbLoaded) {
