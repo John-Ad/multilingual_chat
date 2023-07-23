@@ -37,7 +37,7 @@ class _CostChartState extends State<CostChart> {
         data: _costs,
         variables: {
           'time': Variable(
-            accessor: (CostTracking cost) => cost.createdAt,
+            accessor: (CostTracking cost) => DateTime.parse(cost.createdAt),
             scale: TimeScale(
               formatter: (time) => time.toIso8601String(),
             ),
