@@ -34,13 +34,18 @@ class DBContext {
 
   static Future _onCreate(Database db, int version) async {
     debugPrint("Creating database...");
+    try {
+      String initSql = await rootBundle.loadString("assets/db/current.sql");
 
-    String initSql = await rootBundle.loadString("assets/db/init.sql");
+      List<String> statements = initSql.split(";");
 
-    List<String> statements = initSql.split(";");
-
-    for (var statement in statements) {
-      if (statement.trim().isNotEmpty) await db.execute("${statement.trim()};");
+      for (var statement in statements) {
+        if (statement.trim().isNotEmpty) {
+          await db.execute("${statement.trim()};");
+        }
+      }
+    } catch (e) {
+      debugPrint("Error: $e");
     }
   }
 
