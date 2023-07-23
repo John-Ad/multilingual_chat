@@ -35,6 +35,14 @@ create table
         foreign key (conversation_id) references Conversation(id) on delete cascade
     );
 
+create table
+    Cost_Tracking(
+        id integer primary key autoincrement,
+        context_count int not null,
+        estimated_cost decimal(19, 2) not null,
+        created_at timestamp not null default current_timestamp
+    );
+
 insert into Settings(id, api_key) values(1,'');
 
 /*Insert 2 popular languages into Language table from each continent that uses latin characters*/

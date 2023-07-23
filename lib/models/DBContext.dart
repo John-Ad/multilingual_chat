@@ -7,7 +7,7 @@ import 'package:sqflite/sqflite.dart';
 ///
 /// It is a singleton class, so only one instance of it can exist.
 class DBContext {
-  static const int version = 4;
+  static const int version = 1;
   static Database? _database;
 
   static Future<Database> get database async {
@@ -47,12 +47,23 @@ class DBContext {
   static Future _onUpgrade(Database db, int oldVersion, int newVersion) async {
     debugPrint("Upgrading database...");
 
-    String upgradeSql = await rootBundle.loadString("assets/db/upgrade.sql");
+    try {
+      String upgradeSql = "";
+      if (oldVersion == 1 && newVersion == 2) {
+        upgradeSql = await rootBundle.loadString("assets/db/upgrade-v2.sql");
+      } else if (oldVersion == 2 && newVersion == 3) {
+        upgradeSql = await rootBundle.loadString("assets/db/upgrade-v3.sql");
+      } // etc
 
-    List<String> statements = upgradeSql.split(";");
+      List<String> statements = upgradeSql.split(";");
 
-    for (var statement in statements) {
-      if (statement.trim().isNotEmpty) await db.execute("${statement.trim()};");
+      for (var statement in statements) {
+        if (statement.trim().isNotEmpty) {
+          await db.execute("${statement.trim()};");
+        }
+      }
+    } catch (e) {
+      debugPrint("Error: $e");
     }
   }
 }
