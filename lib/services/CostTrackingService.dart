@@ -1,7 +1,9 @@
 import 'package:flutter/foundation.dart';
 import 'package:multilingual_chat/models/DBContext.dart';
 import 'package:multilingual_chat/models/costTracking.dart';
+import 'package:multilingual_chat/models/openApiUsage.dart';
 import 'package:multilingual_chat/models/settings.dart';
+import 'package:multilingual_chat/services/GPTService.dart';
 import 'package:sqflite/sqflite.dart';
 
 enum CostQueryTimeRange {
@@ -82,13 +84,23 @@ class CostTrackingService {
     }
   }
 
-  Future<bool> add(CostTracking costTracking) async {
+  Future<bool> add(OpenApiUsage usage) async {
     try {
       if (!dbLoaded) {
         await init();
       }
 
-      var id = await db.insert('Cost_Tracking', costTracking.toMap());
+      var inputCost = usage.promptTokens * GPTService.costPerInputToken;
+      var outputCost = usage.completionTokens * GPTService.costPerOutputToken;
+      var totalCost = inputCost + outputCost;
+
+      var id = await db.insert(
+        'Cost_Tracking',
+        {
+          "context_count": usage.totalTokens,
+          "estimated_cost": totalCost,
+        },
+      );
       if (id == 0) return false;
 
       return true;
