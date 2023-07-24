@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:multilingual_chat/models/DBContext.dart';
+import 'package:multilingual_chat/models/chartData.dart';
 import 'package:multilingual_chat/models/costTracking.dart';
 import 'package:multilingual_chat/models/openApiUsage.dart';
 import 'package:multilingual_chat/models/settings.dart';
@@ -87,6 +88,62 @@ class CostTrackingService {
       }
       return [];
     }
+  }
+
+  Future<List<ChartData>> getCostGroupedBy6Hrs() async {
+    var daysCostData = await getAll(CostQueryTimeRange.day);
+    debugPrint("Day's cost: $daysCostData");
+
+    // from the current hour, get the last 24 hrs
+    var currentDateTime = DateTime.now();
+    var startHour = currentDateTime.subtract(const Duration(hours: 24)).hour;
+
+    // create 24 costTrack items with average cost of each hour
+    var currentHour = startHour;
+    List<ChartData> returnData = [];
+    for (var i = 0; i < 24; i += 6) {
+      if (currentHour > 23) {
+        currentHour = 0 + (currentHour - 24);
+      }
+
+      var hourCostData = daysCostData
+          .where(
+            (element) =>
+                DateTime.parse(element.createdAt).hour >= currentHour &&
+                DateTime.parse(element.createdAt).hour < currentHour + 6,
+          )
+          .toList();
+
+      debugPrint("Hour cost data: $hourCostData");
+
+      if (hourCostData.isEmpty) {
+        returnData.add(ChartData(
+          value: 0,
+          hour: currentHour,
+          day: 0,
+          month: 0,
+          week: 0,
+        ));
+      } else {
+        var totalCost = 0.0;
+        var totalContextCount = 0;
+        for (var element in hourCostData) {
+          totalCost += element.estimatedCost;
+          totalContextCount += element.contextCount;
+        }
+        returnData.add(ChartData(
+          value: totalCost / hourCostData.length,
+          hour: currentHour,
+          day: 0,
+          month: 0,
+          week: 0,
+        ));
+      }
+
+      currentHour += 6;
+    }
+
+    return returnData;
   }
 
   Future<bool> add(OpenApiUsage usage) async {

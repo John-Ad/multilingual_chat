@@ -1,7 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:graphic/graphic.dart';
+import 'package:multilingual_chat/models/chartData.dart';
 import 'package:multilingual_chat/models/costTracking.dart';
 import 'package:multilingual_chat/services/CostTrackingService.dart';
+
+enum ChartPeriod {
+  HOUR,
+  DAY,
+  WEEK,
+  MONTH,
+}
 
 class CostChart extends StatefulWidget {
   const CostChart({super.key});
@@ -12,16 +20,16 @@ class CostChart extends StatefulWidget {
 
 class _CostChartState extends State<CostChart> {
   final CostTrackingService _costTrackingService = CostTrackingService();
-  List<CostTracking> _costs = [];
+  List<ChartData> _costs = [];
 
   @override
   void initState() {
     super.initState();
-    _getData(CostQueryTimeRange.week);
+    _getData24Hrs();
   }
 
-  void _getData(CostQueryTimeRange costQueryTimeRange) async {
-    var costs = await _costTrackingService.getAll(costQueryTimeRange);
+  void _getData24Hrs() async {
+    var costs = await _costTrackingService.getCostGroupedBy6Hrs();
     setState(() {
       _costs = costs;
     });
@@ -29,53 +37,106 @@ class _CostChartState extends State<CostChart> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      margin: const EdgeInsets.only(top: 10),
-      width: 350,
-      height: 300,
-      child: Chart(
-        data: _costs,
-        variables: {
-          'time': Variable(
-            accessor: (CostTracking cost) => DateTime.parse(cost.createdAt),
-            scale: TimeScale(
-              formatter: (time) => time.toIso8601String(),
+    return Column(
+      children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            TextButton(
+              onPressed: () {
+                _getData24Hrs();
+              },
+              style: ButtonStyle(
+                backgroundColor: MaterialStateProperty.all<Color>(
+                  Theme.of(context).primaryColor,
+                ),
+              ),
+              child: const Text("Hr", style: TextStyle(color: Colors.white)),
             ),
-          ),
-          'cost': Variable(
-            accessor: (CostTracking cost) => cost.estimatedCost,
-          ),
-        },
-        marks: [
-          LineMark(
-            shape: ShapeEncode(value: BasicLineShape(dash: [5, 2])),
-            selected: {
-              'touchMove': {1}
-            },
-          )
-        ],
-        coord: RectCoord(color: const Color(0xffdddddd)),
-        axes: [
-          Defaults.horizontalAxis,
-          Defaults.verticalAxis,
-        ],
-        selections: {
-          'touchMove': PointSelection(
-            on: {
-              GestureType.scaleUpdate,
-              GestureType.tapDown,
-              GestureType.longPressMoveUpdate
-            },
-            dim: Dim.x,
-          )
-        },
-        tooltip: TooltipGuide(
-          followPointer: [false, true],
-          align: Alignment.topLeft,
-          offset: const Offset(-20, -20),
+            TextButton(
+              onPressed: () {
+                _getData24Hrs();
+              },
+              style: ButtonStyle(
+                backgroundColor: MaterialStateProperty.all<Color>(
+                  Theme.of(context).primaryColor,
+                ),
+              ),
+              child: const Text("D", style: TextStyle(color: Colors.white)),
+            ),
+            TextButton(
+              onPressed: () {
+                _getData24Hrs();
+              },
+              style: ButtonStyle(
+                backgroundColor: MaterialStateProperty.all<Color>(
+                  Theme.of(context).primaryColor,
+                ),
+              ),
+              child: const Text("W", style: TextStyle(color: Colors.white)),
+            ),
+            TextButton(
+              onPressed: () {
+                _getData24Hrs();
+              },
+              style: ButtonStyle(
+                backgroundColor: MaterialStateProperty.all<Color>(
+                  Theme.of(context).primaryColor,
+                ),
+              ),
+              child: const Text("M", style: TextStyle(color: Colors.white)),
+            ),
+          ],
         ),
-        crosshair: CrosshairGuide(followPointer: [false, true]),
-      ),
+        Container(
+          margin: const EdgeInsets.only(
+            top: 10,
+            bottom: 20,
+          ),
+          width: 350,
+          height: 300,
+          child: Chart(
+            data: _costs,
+            variables: {
+              'hour': Variable(
+                accessor: (ChartData data) => "${data.hour}:00",
+              ),
+              'cost': Variable(
+                accessor: (ChartData data) => data.value,
+              ),
+            },
+            marks: [
+              LineMark(
+                shape: ShapeEncode(value: BasicLineShape(dash: [5, 2])),
+                selected: {
+                  'touchMove': {1}
+                },
+              )
+            ],
+            coord: RectCoord(color: const Color(0xffdddddd)),
+            axes: [
+              Defaults.horizontalAxis,
+              Defaults.verticalAxis,
+            ],
+            selections: {
+              'touchMove': PointSelection(
+                on: {
+                  GestureType.scaleUpdate,
+                  GestureType.tapDown,
+                  GestureType.longPressMoveUpdate
+                },
+                dim: Dim.x,
+              )
+            },
+            tooltip: TooltipGuide(
+              followPointer: [false, true],
+              align: Alignment.topLeft,
+              offset: const Offset(-20, -20),
+            ),
+            crosshair: CrosshairGuide(followPointer: [false, true]),
+          ),
+        ),
+      ],
     );
   }
 }
