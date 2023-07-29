@@ -1,15 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:graphic/graphic.dart';
 import 'package:multilingual_chat/models/chartData.dart';
-import 'package:multilingual_chat/models/costTracking.dart';
 import 'package:multilingual_chat/services/CostTrackingService.dart';
-
-enum ChartPeriod {
-  HOUR,
-  DAY,
-  WEEK,
-  MONTH,
-}
 
 class CostChart extends StatefulWidget {
   const CostChart({super.key});
@@ -22,21 +14,32 @@ class _CostChartState extends State<CostChart> {
   final CostTrackingService _costTrackingService = CostTrackingService();
   List<ChartData> _costs = [];
 
+  bool _loading = false;
+
   @override
   void initState() {
     super.initState();
-    _getData24Hrs();
+    _getCurrentMonthsData();
   }
 
-  void _getData24Hrs() async {
-    var costs = await _costTrackingService.getCostGroupedBy6Hrs();
+  void _getCurrentMonthsData() async {
+    setState(() {
+      _loading = true;
+    });
+    var costs = await _costTrackingService.getCurrentMonthsData();
     setState(() {
       _costs = costs;
+    });
+    setState(() {
+      _loading = false;
     });
   }
 
   @override
   Widget build(BuildContext context) {
+    // get width of screen
+    var screenSize = MediaQuery.of(context).size;
+
     return Column(
       children: [
         Row(
@@ -44,7 +47,7 @@ class _CostChartState extends State<CostChart> {
           children: [
             TextButton(
               onPressed: () {
-                _getData24Hrs();
+                _getCurrentMonthsData();
               },
               style: ButtonStyle(
                 backgroundColor: MaterialStateProperty.all<Color>(
@@ -55,7 +58,7 @@ class _CostChartState extends State<CostChart> {
             ),
             TextButton(
               onPressed: () {
-                _getData24Hrs();
+                _getCurrentMonthsData();
               },
               style: ButtonStyle(
                 backgroundColor: MaterialStateProperty.all<Color>(
@@ -66,7 +69,7 @@ class _CostChartState extends State<CostChart> {
             ),
             TextButton(
               onPressed: () {
-                _getData24Hrs();
+                _getCurrentMonthsData();
               },
               style: ButtonStyle(
                 backgroundColor: MaterialStateProperty.all<Color>(
@@ -77,7 +80,7 @@ class _CostChartState extends State<CostChart> {
             ),
             TextButton(
               onPressed: () {
-                _getData24Hrs();
+                _getCurrentMonthsData();
               },
               style: ButtonStyle(
                 backgroundColor: MaterialStateProperty.all<Color>(
@@ -88,33 +91,25 @@ class _CostChartState extends State<CostChart> {
             ),
           ],
         ),
-        if (_costs.isNotEmpty)
+        if (_costs.isNotEmpty && !_loading)
           Container(
             margin: const EdgeInsets.only(
               top: 10,
               bottom: 20,
             ),
-            width: 350,
+            width: screenSize.width,
             height: 300,
             child: Chart(
               data: _costs,
               variables: {
-                'Time': Variable(
-                  accessor: (ChartData data) => "${data.hour}:00",
+                'Day': Variable(
+                  accessor: (ChartData data) => data.label,
                 ),
-                'cost': Variable(
+                'Cost': Variable(
                   accessor: (ChartData data) => data.value,
                 ),
               },
-              marks: [
-                LineMark(
-                  shape: ShapeEncode(value: BasicLineShape(dash: [5, 2])),
-                  selected: {
-                    'touchMove': {1}
-                  },
-                )
-              ],
-              coord: RectCoord(color: const Color(0xffdddddd)),
+              marks: [IntervalMark()],
               axes: [
                 Defaults.horizontalAxis,
                 Defaults.verticalAxis,
@@ -137,6 +132,7 @@ class _CostChartState extends State<CostChart> {
               crosshair: CrosshairGuide(followPointer: [false, true]),
             ),
           ),
+        if (_loading) const CircularProgressIndicator(),
       ],
     );
   }
