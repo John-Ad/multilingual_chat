@@ -88,54 +88,55 @@ class _CostChartState extends State<CostChart> {
             ),
           ],
         ),
-        Container(
-          margin: const EdgeInsets.only(
-            top: 10,
-            bottom: 20,
-          ),
-          width: 350,
-          height: 300,
-          child: Chart(
-            data: _costs,
-            variables: {
-              'hour': Variable(
-                accessor: (ChartData data) => "${data.hour}:00",
-              ),
-              'cost': Variable(
-                accessor: (ChartData data) => data.value,
-              ),
-            },
-            marks: [
-              LineMark(
-                shape: ShapeEncode(value: BasicLineShape(dash: [5, 2])),
-                selected: {
-                  'touchMove': {1}
-                },
-              )
-            ],
-            coord: RectCoord(color: const Color(0xffdddddd)),
-            axes: [
-              Defaults.horizontalAxis,
-              Defaults.verticalAxis,
-            ],
-            selections: {
-              'touchMove': PointSelection(
-                on: {
-                  GestureType.scaleUpdate,
-                  GestureType.tapDown,
-                  GestureType.longPressMoveUpdate
-                },
-                dim: Dim.x,
-              )
-            },
-            tooltip: TooltipGuide(
-              followPointer: [false, true],
-              align: Alignment.topLeft,
-              offset: const Offset(-20, -20),
+        if (_costs.isNotEmpty)
+          Container(
+            margin: const EdgeInsets.only(
+              top: 10,
+              bottom: 20,
             ),
-            crosshair: CrosshairGuide(followPointer: [false, true]),
+            width: 350,
+            height: 300,
+            child: Chart(
+              data: _costs,
+              variables: {
+                'Time': Variable(
+                  accessor: (ChartData data) => "${data.hour}:00",
+                ),
+                'cost': Variable(
+                  accessor: (ChartData data) => data.value,
+                ),
+              },
+              marks: [
+                LineMark(
+                  shape: ShapeEncode(value: BasicLineShape(dash: [5, 2])),
+                  selected: {
+                    'touchMove': {1}
+                  },
+                )
+              ],
+              coord: RectCoord(color: const Color(0xffdddddd)),
+              axes: [
+                Defaults.horizontalAxis,
+                Defaults.verticalAxis,
+              ],
+              selections: {
+                'touchMove': PointSelection(
+                  on: {
+                    GestureType.scaleUpdate,
+                    GestureType.tapDown,
+                    GestureType.longPressMoveUpdate
+                  },
+                  dim: Dim.x,
+                )
+              },
+              tooltip: TooltipGuide(
+                followPointer: [false, true],
+                align: Alignment.topLeft,
+                offset: const Offset(-20, -20),
+              ),
+              crosshair: CrosshairGuide(followPointer: [false, true]),
+            ),
           ),
-        ),
       ],
     );
   }

@@ -1,4 +1,5 @@
 import 'package:flutter/foundation.dart';
+import 'package:intl/intl.dart';
 import 'package:multilingual_chat/models/DBContext.dart';
 import 'package:multilingual_chat/models/chartData.dart';
 import 'package:multilingual_chat/models/costTracking.dart';
@@ -31,48 +32,28 @@ class CostTrackingService {
     dbLoaded = true;
   }
 
-  /// get all cost data from the last hour, day, week, or month
+  /// Get all cost tracking data for a given year and month
   ///
-  /// @param timeRange The time range to query
+  /// @param year: int representing the year to get data for
+  ///
+  /// @param month: int representing the the month to get data for. 1-12
   ///
   /// @return a list of CostTracking objects
-  Future<List<CostTracking>> getAll(CostQueryTimeRange timeRange) async {
+  Future<List<CostTracking>> getAllForYearAndMonth(int year, int month) async {
     try {
       if (!dbLoaded) {
         await init();
       }
 
-      var maxTime = "";
-
-      // get timestamp for hour, day, week, or month
-      switch (timeRange) {
-        case CostQueryTimeRange.hour:
-          maxTime = DateTime.now()
-              .subtract(const Duration(hours: 1))
-              .toIso8601String();
-          break;
-        case CostQueryTimeRange.day:
-          maxTime = DateTime.now()
-              .subtract(const Duration(days: 1))
-              .toIso8601String();
-          break;
-        case CostQueryTimeRange.week:
-          maxTime = DateTime.now()
-              .subtract(const Duration(days: 7))
-              .toIso8601String();
-          break;
-        case CostQueryTimeRange.month:
-          maxTime = DateTime.now()
-              .subtract(const Duration(days: 30))
-              .toIso8601String();
-          break;
-      }
+      var startTimestamp = DateTime(year, month).toIso8601String();
+      var endTimestamp = DateTime(year, month + 1).toIso8601String();
 
       var data = await db.query(
         'Cost_Tracking',
-        where: 'created_at >= ?',
+        where: 'created_at >= ? and created_at < ?',
         whereArgs: [
-          maxTime,
+          startTimestamp,
+          endTimestamp,
         ],
       );
 
@@ -90,60 +71,54 @@ class CostTrackingService {
     }
   }
 
-  Future<List<ChartData>> getCostGroupedBy6Hrs() async {
-    var daysCostData = await getAll(CostQueryTimeRange.day);
-    debugPrint("Day's cost: $daysCostData");
-
-    // from the current hour, get the last 24 hrs
-    var currentDateTime = DateTime.now();
-    var startHour = currentDateTime.subtract(const Duration(hours: 24)).hour;
-
-    // create 24 costTrack items with average cost of each hour
-    var currentHour = startHour;
+  /// Group cost tracking data by day for a given year and month.
+  /// Will label the grouped data using a readable string for
+  /// the day and month.
+  ///
+  /// @param year: int representing the year to get data for
+  ///
+  /// @param month: int representing the the month to get data for. 1-12
+  ///
+  /// @param data: List of CostTracking objects to group
+  ///
+  /// @return a list of ChartData objects
+  Future<List<ChartData>> _groupByDay(
+    int year,
+    int month,
+    List<CostTracking> data,
+  ) async {
+    Map<String, ChartData> groupedData = {};
     List<ChartData> returnData = [];
-    for (var i = 0; i < 24; i += 6) {
-      if (currentHour > 23) {
-        currentHour = 0 + (currentHour - 24);
+
+    for (var element in data) {
+      var date = DateTime.parse(element.createdAt);
+      var day = date.day.toString();
+
+      if (groupedData.containsKey(day)) {
+        groupedData[day]!.value += element.estimatedCost;
+        continue;
       }
 
-      var hourCostData = daysCostData
-          .where(
-            (element) =>
-                DateTime.parse(element.createdAt).hour >= currentHour &&
-                DateTime.parse(element.createdAt).hour < currentHour + 6,
-          )
-          .toList();
+      groupedData[day] = ChartData(
+        value: element.estimatedCost,
+        label: day,
+      );
+    }
 
-      debugPrint("Hour cost data: $hourCostData");
-
-      if (hourCostData.isEmpty) {
-        returnData.add(ChartData(
-          value: 0,
-          hour: currentHour,
-          day: 0,
-          month: 0,
-          week: 0,
-        ));
-      } else {
-        var totalCost = 0.0;
-        var totalContextCount = 0;
-        for (var element in hourCostData) {
-          totalCost += element.estimatedCost;
-          totalContextCount += element.contextCount;
-        }
-        returnData.add(ChartData(
-          value: totalCost / hourCostData.length,
-          hour: currentHour,
-          day: 0,
-          month: 0,
-          week: 0,
-        ));
-      }
-
-      currentHour += 6;
+    for (var element in groupedData.entries) {
+      var date = DateTime(year, month, int.parse(element.key));
+      var label = DateFormat("d MMMM").format(date);
+      element.value.label = label;
+      returnData.add(element.value);
     }
 
     return returnData;
+  }
+
+  Future<List<ChartData>> getCurrentMonthsData() async {
+    var now = DateTime.now();
+    var data = await getAllForYearAndMonth(now.year, now.month);
+    return _groupByDay(now.year, now.month, data);
   }
 
   Future<bool> add(OpenApiUsage usage) async {

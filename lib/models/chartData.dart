@@ -1,15 +1,11 @@
+import 'costTracking.dart';
+
 class ChartData {
   double value;
-  int hour;
-  int day;
-  int week;
-  int month;
+  String label;
 
   ChartData({
     required this.value,
-    required this.hour,
-    required this.day,
-    required this.week,
-    required this.month,
+    required this.label,
   });
 }
