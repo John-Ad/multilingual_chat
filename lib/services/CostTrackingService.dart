@@ -16,6 +16,51 @@ enum CostQueryTimeRange {
 }
 
 class CostTrackingService {
+  final List<ChartData> _costsTestMonth = [
+    ChartData(value: 5, label: "1 July"),
+    ChartData(value: 10, label: "2 July"),
+    ChartData(value: 20, label: "3 July"),
+    ChartData(value: 30, label: "4 July"),
+    ChartData(value: 40, label: "5 July"),
+    ChartData(value: 50, label: "6 July"),
+    ChartData(value: 60, label: "7 July"),
+    ChartData(value: 70, label: "8 July"),
+    ChartData(value: 80, label: "9 July"),
+    ChartData(value: 10, label: "10 July"),
+    ChartData(value: 20, label: "11 July"),
+    ChartData(value: 30, label: "12 July"),
+    ChartData(value: 40, label: "13 July"),
+    ChartData(value: 50, label: "14 July"),
+    ChartData(value: 60, label: "15 July"),
+    ChartData(value: 70, label: "16 July"),
+    ChartData(value: 80, label: "17 July"),
+    ChartData(value: 90, label: "18 July"),
+    ChartData(value: 100, label: "19 July"),
+    ChartData(value: 110, label: "20 July"),
+    ChartData(value: 120, label: "21 July"),
+    ChartData(value: 130, label: "22 July"),
+    ChartData(value: 140, label: "23 July"),
+    ChartData(value: 150, label: "24 July"),
+    ChartData(value: 160, label: "25 July"),
+    ChartData(value: 170, label: "26 July"),
+    ChartData(value: 180, label: "27 July"),
+    ChartData(value: 190, label: "28 July"),
+    ChartData(value: 200, label: "29 July"),
+    ChartData(value: 210, label: "30 July"),
+    ChartData(value: 220, label: "31 July"),
+  ];
+
+  final List<ChartData> _costsWeek = [
+    ChartData(value: 5, label: "1 July"),
+    ChartData(value: 10, label: "2 July"),
+    ChartData(value: 20, label: "3 July"),
+    ChartData(value: 30, label: "4 July"),
+    ChartData(value: 40, label: "5 July"),
+    ChartData(value: 50, label: "6 July"),
+    ChartData(value: 60, label: "7 July"),
+    ChartData(value: 70, label: "8 July"),
+  ];
+
   late Database db;
   bool dbLoaded = false;
 
@@ -32,28 +77,23 @@ class CostTrackingService {
     dbLoaded = true;
   }
 
-  /// Get all cost tracking data for a given year and month
-  ///
-  /// @param year: int representing the year to get data for
-  ///
-  /// @param month: int representing the the month to get data for. 1-12
+  /// Get all cost tracking data for the current month
   ///
   /// @return a list of CostTracking objects
-  Future<List<CostTracking>> getAllForYearAndMonth(int year, int month) async {
+  Future<List<CostTracking>> getAllForMonth() async {
     try {
       if (!dbLoaded) {
         await init();
       }
 
-      var startTimestamp = DateTime(year, month).toIso8601String();
-      var endTimestamp = DateTime(year, month + 1).toIso8601String();
+      var startTimestamp =
+          DateTime.now().add(const Duration(days: -31)).toIso8601String();
 
       var data = await db.query(
         'Cost_Tracking',
-        where: 'created_at >= ? and created_at < ?',
+        where: 'created_at >= ?',
         whereArgs: [
           startTimestamp,
-          endTimestamp,
         ],
       );
 
@@ -71,20 +111,46 @@ class CostTrackingService {
     }
   }
 
-  /// Group cost tracking data by day for a given year and month.
+  Future<List<CostTracking>> getAllForWeek() async {
+    try {
+      var startTime =
+          DateTime.now().subtract(Duration(days: 7)).toIso8601String();
+
+      if (!dbLoaded) {
+        await init();
+      }
+
+      var data = await db.query(
+        'Cost_Tracking',
+        where: 'created_at >= ?',
+        whereArgs: [
+          startTime,
+        ],
+      );
+
+      List<CostTracking> returnData = [];
+
+      for (var element in data) {
+        returnData.add(CostTracking.fromMap(element));
+      }
+
+      return returnData;
+    } catch (e) {
+      if (kDebugMode) {
+        debugPrint("Get cost data err: $e");
+      }
+      return [];
+    }
+  }
+
+  /// Group cost tracking data by day
   /// Will label the grouped data using a readable string for
   /// the day and month.
-  ///
-  /// @param year: int representing the year to get data for
-  ///
-  /// @param month: int representing the the month to get data for. 1-12
   ///
   /// @param data: List of CostTracking objects to group
   ///
   /// @return a list of ChartData objects
   Future<List<ChartData>> _groupByDay(
-    int year,
-    int month,
     List<CostTracking> data,
   ) async {
     Map<String, ChartData> groupedData = {};
@@ -92,21 +158,22 @@ class CostTrackingService {
 
     for (var element in data) {
       var date = DateTime.parse(element.createdAt);
-      var day = date.day.toString();
 
-      if (groupedData.containsKey(day)) {
-        groupedData[day]!.value += element.estimatedCost;
+      var key = "${date.day}-${date.month}-${date.year}";
+
+      if (groupedData.containsKey(key)) {
+        groupedData[key]!.value += element.estimatedCost;
         continue;
       }
 
-      groupedData[day] = ChartData(
+      groupedData[key] = ChartData(
         value: element.estimatedCost,
-        label: day,
+        label: date.toIso8601String(),
       );
     }
 
     for (var element in groupedData.entries) {
-      var date = DateTime(year, month, int.parse(element.key));
+      var date = DateTime.parse(element.value.label);
       var label = DateFormat("d MMMM").format(date);
       element.value.label = label;
       returnData.add(element.value);
@@ -116,9 +183,37 @@ class CostTrackingService {
   }
 
   Future<List<ChartData>> getCurrentMonthsData() async {
-    var now = DateTime.now();
-    var data = await getAllForYearAndMonth(now.year, now.month);
-    return _groupByDay(now.year, now.month, data);
+    // return _costsTestMonth;
+
+    var data = await getAllForMonth();
+    return _groupByDay(data);
+  }
+
+  Future<List<ChartData>> getCurrentWeeksData() async {
+    // return _costsWeek;
+
+    var data = await getAllForWeek();
+    return _groupByDay(data);
+  }
+
+  Future<num> getTotalCost() async {
+    try {
+      if (!dbLoaded) {
+        await init();
+      }
+      var data = await db.rawQuery(
+        'SELECT COALESCE(SUM(estimated_cost), 0) as total FROM Cost_Tracking',
+      );
+
+      if (data.isEmpty) return -1;
+
+      return data.first["total"] as num;
+    } catch (e) {
+      if (kDebugMode) {
+        debugPrint("Get cost data err: $e");
+      }
+      return -1;
+    }
   }
 
   Future<bool> add(OpenApiUsage usage) async {

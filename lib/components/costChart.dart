@@ -1,8 +1,7 @@
-import 'dart:ffi';
-
 import 'package:flutter/material.dart';
 import 'package:graphic/graphic.dart';
 import 'package:multilingual_chat/models/chartData.dart';
+import 'package:multilingual_chat/models/enums/costTracking.dart';
 import 'package:multilingual_chat/services/CostTrackingService.dart';
 
 class CostChart extends StatefulWidget {
@@ -15,55 +14,39 @@ class CostChart extends StatefulWidget {
 class _CostChartState extends State<CostChart> {
   final CostTrackingService _costTrackingService = CostTrackingService();
   List<ChartData> _costs = [];
-  final List<ChartData> _costsTest = [
-    ChartData(value: 5, label: "1 July"),
-    ChartData(value: 10, label: "2 July"),
-    ChartData(value: 20, label: "3 July"),
-    ChartData(value: 30, label: "4 July"),
-    ChartData(value: 40, label: "5 July"),
-    ChartData(value: 50, label: "6 July"),
-    ChartData(value: 60, label: "7 July"),
-    ChartData(value: 70, label: "8 July"),
-    ChartData(value: 80, label: "9 July"),
-    ChartData(value: 10, label: "10 July"),
-    ChartData(value: 20, label: "11 July"),
-    ChartData(value: 30, label: "12 July"),
-    ChartData(value: 40, label: "13 July"),
-    ChartData(value: 50, label: "14 July"),
-    ChartData(value: 60, label: "15 July"),
-    ChartData(value: 70, label: "16 July"),
-    ChartData(value: 80, label: "17 July"),
-    ChartData(value: 90, label: "18 July"),
-    ChartData(value: 100, label: "19 July"),
-    ChartData(value: 110, label: "20 July"),
-    ChartData(value: 120, label: "21 July"),
-    ChartData(value: 130, label: "22 July"),
-    ChartData(value: 140, label: "23 July"),
-    ChartData(value: 150, label: "24 July"),
-    ChartData(value: 160, label: "25 July"),
-    ChartData(value: 170, label: "26 July"),
-    ChartData(value: 180, label: "27 July"),
-    ChartData(value: 190, label: "28 July"),
-    ChartData(value: 200, label: "29 July"),
-    ChartData(value: 210, label: "30 July"),
-    ChartData(value: 220, label: "31 July"),
-  ];
-
+  num _totalCost = 0;
   bool _loading = false;
 
   @override
   void initState() {
     super.initState();
-    _getCurrentMonthsData();
+    _getData(CostTrackingTime.WEEK);
   }
 
-  void _getCurrentMonthsData() async {
+  void _getData(CostTrackingTime type) async {
     setState(() {
       _loading = true;
     });
-    var costs = await _costTrackingService.getCurrentMonthsData();
+
+    List<ChartData> costs = [];
+
+    if (type == CostTrackingTime.WEEK) {
+      costs = await _costTrackingService.getCurrentWeeksData();
+    }
+    if (type == CostTrackingTime.MONTH) {
+      costs = await _costTrackingService.getCurrentMonthsData();
+    }
+
+    num totalCost = await _costTrackingService.getTotalCost();
+
+    if (mounted == false) return;
+
     setState(() {
       _costs = costs;
+      // _costs = [
+      //   ChartData(value: 0.1, label: "1 July"),
+      // ];
+      _totalCost = totalCost;
     });
     setState(() {
       _loading = false;
@@ -82,29 +65,7 @@ class _CostChartState extends State<CostChart> {
           children: [
             TextButton(
               onPressed: () {
-                _getCurrentMonthsData();
-              },
-              style: ButtonStyle(
-                backgroundColor: MaterialStateProperty.all<Color>(
-                  Theme.of(context).primaryColor,
-                ),
-              ),
-              child: const Text("Hr", style: TextStyle(color: Colors.white)),
-            ),
-            TextButton(
-              onPressed: () {
-                _getCurrentMonthsData();
-              },
-              style: ButtonStyle(
-                backgroundColor: MaterialStateProperty.all<Color>(
-                  Theme.of(context).primaryColor,
-                ),
-              ),
-              child: const Text("D", style: TextStyle(color: Colors.white)),
-            ),
-            TextButton(
-              onPressed: () {
-                _getCurrentMonthsData();
+                _getData(CostTrackingTime.WEEK);
               },
               style: ButtonStyle(
                 backgroundColor: MaterialStateProperty.all<Color>(
@@ -115,7 +76,7 @@ class _CostChartState extends State<CostChart> {
             ),
             TextButton(
               onPressed: () {
-                _getCurrentMonthsData();
+                _getData(CostTrackingTime.MONTH);
               },
               style: ButtonStyle(
                 backgroundColor: MaterialStateProperty.all<Color>(
@@ -126,7 +87,20 @@ class _CostChartState extends State<CostChart> {
             ),
           ],
         ),
-        if (_costsTest.isNotEmpty && !_loading)
+        Row(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            Padding(
+              padding: const EdgeInsets.fromLTRB(10, 30, 0, 0),
+              child: Text(
+                "Total Cost Over Time: \$${_totalCost < 1 ? _totalCost.toStringAsFixed(6) : _totalCost.toStringAsFixed(2)}",
+                style: TextStyle(color: Colors.white),
+                textAlign: TextAlign.left,
+              ),
+            ),
+          ],
+        ),
+        if (_costs.isNotEmpty && !_loading)
           Container(
             margin: const EdgeInsets.only(
               top: 10,
@@ -135,13 +109,13 @@ class _CostChartState extends State<CostChart> {
             width: screenSize.width,
             height: 300,
             child: Chart(
-              data: _costsTest,
+              data: _costs,
               variables: {
                 '_': Variable(
                   scale: OrdinalScale(
                     formatter: (label) {
-                      int costsLength = _costsTest.length;
-                      int index = _costsTest.indexWhere(
+                      int costsLength = _costs.length;
+                      int index = _costs.indexWhere(
                         (element) => element.label == label,
                       );
 
@@ -152,7 +126,7 @@ class _CostChartState extends State<CostChart> {
 
                       int div = (costsLength / 3).toInt();
 
-                      // show every (lenght/4)th label
+                      // show every (lenght/3)th label
                       // eg if 20 labels, show every 5th
                       // but not first or last, they are already included
                       if (index % div == 0 && index > 0 && index < costsLength)
@@ -164,6 +138,9 @@ class _CostChartState extends State<CostChart> {
                   accessor: (ChartData data) => data.label,
                 ),
                 'Cost': Variable(
+                  scale: LinearScale(
+                    min: 0,
+                  ),
                   accessor: (ChartData data) => data.value,
                 ),
                 'Day': Variable(
