@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:multilingual_chat/components/costChart.dart';
 import 'package:multilingual_chat/services/SettingsService.dart';
 
 import '../components/toasts.dart';
@@ -349,6 +350,17 @@ class _SettingsPageState extends State<SettingsPage> {
                       ),
                     ),
                   ),
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(0, 40, 0, 20),
+                  child: Text(
+                    'Usage Cost',
+                    textAlign: TextAlign.center,
+                    style: theme.textTheme.headlineSmall!.copyWith(
+                      color: theme.colorScheme.onPrimary,
+                    ),
+                  ),
+                ),
+                const CostChart(),
               ],
             ),
           ),

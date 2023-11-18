@@ -1,12 +1,19 @@
 import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 import 'package:multilingual_chat/models/gptRequestData.dart';
 import 'package:multilingual_chat/models/message.dart';
+import 'package:multilingual_chat/models/openApiUsage.dart';
+import 'package:multilingual_chat/services/CostTrackingService.dart';
 import 'package:multilingual_chat/services/SettingsService.dart';
-import 'package:http/http.dart' as http;
 
 class GPTService {
+  static const double costPerInputToken = 0.0015 / 1000;
+  static const double costPerOutputToken = 0.002 / 1000;
+
   static final SettingsService _settingsService = SettingsService();
+  static final CostTrackingService _costTrackingService = CostTrackingService();
 
   static const String _url = "https://api.openai.com/v1/chat/completions";
 
@@ -135,6 +142,10 @@ class GPTService {
         final responseData = utf8.decode(response.bodyBytes);
         final jsonData = json.decode(responseData);
         final returnMessage = jsonData['choices'][0]['message'];
+
+        // save cost tracking data
+        _costTrackingService.add(OpenApiUsage.fromMap(jsonData['usage']));
+
         return returnMessage['content'];
       } else {
         debugPrint(response.body);

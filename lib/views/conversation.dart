@@ -132,17 +132,21 @@ class _ConversationPageState extends State<ConversationPage> {
     var lastNMessages =
         _messages.reversed.skip(1).take(20).toList().reversed.toList();
 
-    var response = await GPTService.getResponseInChosenLanguage(
+    var responseFuture = GPTService.getResponseInChosenLanguage(
       widget.language,
       widget.topic,
       lastNMessages,
       message,
     );
-    var correction = await GPTService.getLanguageCorrection(
+    var correctionFuture = GPTService.getLanguageCorrection(
       widget.language,
       [],
       message,
     );
+
+    var results = await Future.wait([responseFuture, correctionFuture]);
+    var response = results[0];
+    var correction = results[1];
 
     setState(() {
       _generatingResponse = false;

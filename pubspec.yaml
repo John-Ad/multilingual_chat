@@ -13,6 +13,8 @@ dependencies:
     sdk: flutter
   cupertino_icons: ^1.0.2
   http: ^0.13.5
+  graphic: ^2.2.0
+  intl: ^0.18.1
 
 dev_dependencies:
   flutter_test:
@@ -23,8 +25,7 @@ flutter:
   uses-material-design: true
 
   assets:
-    - assets/db/init.sql
-    - assets/db/upgrade.sql
+    - assets/db/current.sql
 
   fonts:
     - family: OpenSans

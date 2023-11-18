@@ -82,7 +82,7 @@ class _ScrollingTextState extends State<ScrollingText> {
     if (!_available) return;
     await _scrollController.animateTo(
       _scrollController.position.maxScrollExtent,
-      duration: const Duration(seconds: 3),
+      duration: const Duration(seconds: 4),
       curve: Curves.linear,
     );
 
