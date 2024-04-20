@@ -37,7 +37,7 @@ class _ChooseLanguageDialogueState extends State<ChooseLanguageDialogue> {
               "Choose Language",
               style: theme.textTheme.headlineSmall!.copyWith(
                 color: Colors.white,
-                fontSize: 24,
+                fontSize: 16,
               ),
             ),
             IconButton(
