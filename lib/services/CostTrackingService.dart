@@ -77,17 +77,17 @@ class CostTrackingService {
     dbLoaded = true;
   }
 
-  /// Get all cost tracking data for the current month
-  ///
-  /// @return a list of CostTracking objects
-  Future<List<CostTracking>> getAllForMonth() async {
+  Future<List<CostTracking>> getAllForDay() async {
     try {
       if (!dbLoaded) {
         await init();
       }
 
-      var startTimestamp =
-          DateTime.now().add(const Duration(days: -31)).toIso8601String();
+      // set to 00:00:00 of the current day
+      var startTimestamp = DateTime(DateTime.now().year, DateTime.now().month,
+              DateTime.now().day, 0, 1, 1)
+          .toIso8601String()
+          .replaceAll("T", " ");
 
       var data = await db.query(
         'Cost_Tracking',
@@ -111,10 +111,76 @@ class CostTrackingService {
     }
   }
 
+  Future<num> GetUsageForDay() async {
+    try {
+      var data = await getAllForDay();
+      num total = 0;
+      for (var element in data) {
+        total += element.estimatedCost;
+      }
+      return total;
+    } catch (e) {
+      debugPrint("$e");
+      return -1;
+    }
+  }
+
+  /// Get all cost tracking data for the current month
+  ///
+  /// @return a list of CostTracking objects
+  Future<List<CostTracking>> getAllForMonth() async {
+    try {
+      if (!dbLoaded) {
+        await init();
+      }
+
+      var startTimestamp = DateTime.now()
+          .add(const Duration(days: -31))
+          .toIso8601String()
+          .replaceAll("T", " ");
+
+      var data = await db.query(
+        'Cost_Tracking',
+        where: 'created_at >= ?',
+        whereArgs: [
+          startTimestamp,
+        ],
+      );
+
+      List<CostTracking> returnData = [];
+
+      for (var element in data) {
+        returnData.add(CostTracking.fromMap(element));
+      }
+      return returnData;
+    } catch (e) {
+      if (kDebugMode) {
+        debugPrint("Get cost data err: $e");
+      }
+      return [];
+    }
+  }
+
+  Future<num> GetUsageForMonth() async {
+    try {
+      var data = await getAllForMonth();
+      num total = 0;
+      for (var element in data) {
+        total += element.estimatedCost;
+      }
+      return total;
+    } catch (e) {
+      debugPrint("$e");
+      return -1;
+    }
+  }
+
   Future<List<CostTracking>> getAllForWeek() async {
     try {
-      var startTime =
-          DateTime.now().subtract(Duration(days: 7)).toIso8601String();
+      var startTime = DateTime.now()
+          .subtract(Duration(days: 7))
+          .toIso8601String()
+          .replaceAll("T", " ");
 
       if (!dbLoaded) {
         await init();
@@ -140,6 +206,20 @@ class CostTrackingService {
         debugPrint("Get cost data err: $e");
       }
       return [];
+    }
+  }
+
+  Future<num> GetUsageForWeek() async {
+    try {
+      var data = await getAllForWeek();
+      num total = 0;
+      for (var element in data) {
+        total += element.estimatedCost;
+      }
+      return total;
+    } catch (e) {
+      debugPrint("$e");
+      return -1;
     }
   }
 
