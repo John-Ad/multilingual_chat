@@ -3,6 +3,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:multilingual_chat/components/apiUsageCost.dart';
 import 'package:multilingual_chat/components/costChart.dart';
 import 'package:multilingual_chat/services/SettingsService.dart';
+import 'package:multilingual_chat/views/home.dart';
 
 import '../components/toasts.dart';
 import '../models/settings.dart';
@@ -120,12 +121,33 @@ class _SettingsPageState extends State<SettingsPage> {
         ),
         backgroundColor: theme.primaryColor,
         leading: IconButton(
-          onPressed: () => {Navigator.pop(context)},
+          onPressed: () => {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => Home(title: widget.title)),
+            )
+          },
           icon: Icon(
-            Icons.arrow_back,
+            Icons.home,
             color: theme.colorScheme.onPrimary,
           ),
         ),
+        actions: [
+          IconButton(
+            onPressed: () => {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => SettingsPage(title: widget.title)),
+              )
+            },
+            icon: Icon(
+              Icons.settings,
+              color: theme.colorScheme.onPrimary,
+            ),
+          )
+        ],
       ),
       body: Column(
         children: [
