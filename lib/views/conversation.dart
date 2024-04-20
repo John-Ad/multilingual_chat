@@ -7,6 +7,7 @@ import 'package:multilingual_chat/components/toasts.dart';
 import 'package:multilingual_chat/services/GPTService.dart';
 import 'package:multilingual_chat/services/MessagesService.dart';
 import 'package:multilingual_chat/utils/colorGenerators.dart';
+import 'package:multilingual_chat/views/home.dart';
 import 'package:multilingual_chat/views/settings.dart';
 
 import '../components/userMessage.dart';
@@ -200,15 +201,14 @@ class _ConversationPageState extends State<ConversationPage> {
         backgroundColor: theme.primaryColor,
         leading: IconButton(
           onPressed: () => {
-            Navigator.pop(context),
-            // pop twice to pop back from new conversation page
-            if (widget.cameFromHomeView == false)
-              {
-                Navigator.pop(context),
-              }
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => Home(title: widget.title)),
+            )
           },
           icon: Icon(
-            Icons.arrow_back,
+            Icons.home,
             color: theme.colorScheme.onPrimary,
           ),
         ),

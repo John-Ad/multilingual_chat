@@ -71,6 +71,19 @@ class _HomeState extends State<Home> with RouteAware {
             ),
           ),
         ),
+        leading: IconButton(
+          onPressed: () => {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => Home(title: widget.title)),
+            )
+          },
+          icon: Icon(
+            Icons.home,
+            color: theme.colorScheme.onPrimary,
+          ),
+        ),
         actions: [
           IconButton(
             onPressed: () => {

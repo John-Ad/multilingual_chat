@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:multilingual_chat/components/apiUsageCost.dart';
 import 'package:multilingual_chat/components/costChart.dart';
 import 'package:multilingual_chat/services/SettingsService.dart';
+import 'package:multilingual_chat/views/home.dart';
 
 import '../components/toasts.dart';
 import '../models/settings.dart';
@@ -119,12 +121,33 @@ class _SettingsPageState extends State<SettingsPage> {
         ),
         backgroundColor: theme.primaryColor,
         leading: IconButton(
-          onPressed: () => {Navigator.pop(context)},
+          onPressed: () => {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => Home(title: widget.title)),
+            )
+          },
           icon: Icon(
-            Icons.arrow_back,
+            Icons.home,
             color: theme.colorScheme.onPrimary,
           ),
         ),
+        actions: [
+          IconButton(
+            onPressed: () => {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => SettingsPage(title: widget.title)),
+              )
+            },
+            icon: Icon(
+              Icons.settings,
+              color: theme.colorScheme.onPrimary,
+            ),
+          )
+        ],
       ),
       body: Column(
         children: [
@@ -145,14 +168,14 @@ class _SettingsPageState extends State<SettingsPage> {
                 if (settings != null)
                   // API Key
                   Padding(
-                    padding: const EdgeInsets.all(8.0),
+                    padding: const EdgeInsets.all(12.0),
                     child: Row(
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         Expanded(
                           flex: 3,
                           child: Padding(
-                            padding: const EdgeInsets.fromLTRB(10, 0, 16, 0),
+                            padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
                             child: Text(
                               "API Key:",
                               style: TextStyle(
@@ -206,14 +229,14 @@ class _SettingsPageState extends State<SettingsPage> {
                 // Max tokens
                 if (settings != null)
                   Padding(
-                    padding: const EdgeInsets.all(8.0),
+                    padding: const EdgeInsets.all(12.0),
                     child: Row(
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         Expanded(
                           flex: 3,
                           child: Padding(
-                            padding: const EdgeInsets.fromLTRB(10, 0, 16, 0),
+                            padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
                             child: Text(
                               "Max tokens:",
                               style: TextStyle(
@@ -269,14 +292,14 @@ class _SettingsPageState extends State<SettingsPage> {
                 // Num of context messages to include
                 if (settings != null)
                   Padding(
-                    padding: const EdgeInsets.all(8.0),
+                    padding: const EdgeInsets.all(12.0),
                     child: Row(
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         Expanded(
                           flex: 3,
                           child: Padding(
-                            padding: const EdgeInsets.fromLTRB(10, 0, 16, 0),
+                            padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
                             child: Text(
                               "Context count:",
                               style: TextStyle(
@@ -332,7 +355,7 @@ class _SettingsPageState extends State<SettingsPage> {
                 // save button
                 if (settings != null)
                   Padding(
-                    padding: const EdgeInsets.fromLTRB(10, 20, 10, 0),
+                    padding: const EdgeInsets.fromLTRB(12, 20, 12, 0),
                     child: ElevatedButton(
                       style: ElevatedButton.styleFrom(
                         backgroundColor: theme.colorScheme.tertiary,
@@ -353,14 +376,15 @@ class _SettingsPageState extends State<SettingsPage> {
                 Padding(
                   padding: const EdgeInsets.fromLTRB(0, 40, 0, 20),
                   child: Text(
-                    'Usage Cost',
+                    'API Usage Cost',
                     textAlign: TextAlign.center,
                     style: theme.textTheme.headlineSmall!.copyWith(
                       color: theme.colorScheme.onPrimary,
                     ),
                   ),
                 ),
-                const CostChart(),
+                // const CostChart(),
+                const ApiUsageCost()
               ],
             ),
           ),
